@@ -15,7 +15,7 @@ public class Buddy {
     public Buddy(String name, Buddy upper) {
         this.name = name;
         Buddy b = new Buddy(upper.name); //1
-        this.upper = b;                       //2
+        upper = b;                       //2
     }
 
     public static void main(String[] args) {
