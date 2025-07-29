@@ -7,9 +7,15 @@ import java.io.FileNotFoundException;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 
 class InstanciaExecutable implements org.junit.jupiter.api.function.Executable{
@@ -29,6 +35,26 @@ class InstanciaExecutable2 implements org.junit.jupiter.api.function.Executable{
 
 public class MyTest {
 	
+	@BeforeEach
+	void ejecutaAntesCadaPrueba() {
+		System.out.println("**BeforeEach**");
+	}
+	
+	@AfterEach
+	void ejecutaDespuesCadaPrueba() {
+		System.out.println("**AfterEach**");
+	}
+	
+	@BeforeAll	
+	static void ejecutaAntes() {
+		System.out.println("**BeforeAll**");
+	}
+	
+	@AfterAll	
+	static void ejecutaDespues() {
+		System.out.println("**AfterAll**");
+	}
+	
     @Test
     @DisplayName("Equals enteros")
     void exampleEquals() {
@@ -40,13 +66,13 @@ public class MyTest {
     @Test
     void exampleTrue() {
     	String name = "Patrobas";
-        assertTrue(name.length()>0, "Longitud nombre mayor a 0");
+        assertTrue(name.length()>0, "Longitud nombre no es mayor a 0");
     }  
     
     @Test
     void exampleFalse() {
     	String name = "Patrobas";
-        assertFalse(name == null, "name no es false");
+        assertFalse(name == null, "name es null");
     } 
     
     @Test
@@ -113,6 +139,15 @@ public class MyTest {
         int result = square(value);
         assertEquals(value * value, result, "Square calculation is incorrect");
     }
+    
+    @Test
+    void compararArreglos() {
+        int[] esperado = {1, 2, 3, 4};
+        int[] actual = {1, 2, 3, 4};
+
+        assertArrayEquals(esperado, actual, "Los arreglos no son iguales");
+    }
+
 
     private int square(int number) {
         return number * number;

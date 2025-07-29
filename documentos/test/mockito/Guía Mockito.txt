@@ -1,0 +1,591 @@
+Guía Completa de Mockito para Desarrolladores Junior: Simplificando las Pruebas Unitarias en Java1. Introducción a las Pruebas Unitarias y la Necesidad de MockitoEl desarrollo de software moderno se apoya en pilares fundamentales que aseguran la calidad, la estabilidad y la mantenibilidad del código. Entre estos pilares, las pruebas unitarias ocupan un lugar central, actuando como la primera línea de defensa contra los errores y las regresiones.1.1 ¿Qué son las Pruebas Unitarias y por qué son Cruciales?Las pruebas unitarias constituyen una parte esencial del proceso de desarrollo de software, centrándose en la verificación de los componentes más pequeños y aislados de una aplicación, conocidos como "unidades de código".1 El objetivo primordial de estas pruebas es confirmar que cada unidad funciona de manera correcta e independiente, según su diseño y especificaciones. Al aislar cada pieza de la lógica, se logra una comprensión clara de su comportamiento.La importancia de las pruebas unitarias radica en su capacidad para detectar y corregir errores en las fases más tempranas del ciclo de desarrollo. En estas etapas iniciales, los defectos son considerablemente más fáciles y menos costosos de subsanar. Un fallo en una prueba unitaria señala de inmediato un problema en una sección específica del código, lo que simplifica enormemente el proceso de depuración y el mantenimiento general de la aplicación. Además de la detección de errores, las pruebas unitarias sirven como una forma de documentación ejecutable. Al definir el comportamiento esperado de una unidad de código, estas pruebas actúan como una especificación viva y precisa, lo que permite a los desarrolladores realizar refactorizaciones (cambios en la estructura interna del código sin alterar su comportamiento externo) con una mayor confianza. La capacidad de ejecutar estas pruebas de manera rápida y frecuente proporciona una retroalimentación inmediata sobre los cambios realizados, un aspecto crítico para las metodologías de desarrollo ágil y para el mantenimiento de un código limpio y robusto.31.2 El Desafío de las Dependencias en las PruebasEn las aplicaciones de software del mundo real, los componentes rara vez operan en completo aislamiento. Es común que dependan de otros servicios o recursos, tales como bases de datos, APIs externas, sistemas de archivos o incluso otros módulos internos de la misma aplicación. La integración de estas dependencias en las pruebas unitarias introduce una serie de desafíos significativos que pueden comprometer la eficacia del proceso de testing.Uno de los principales problemas es la lentitud.3 Las interacciones con recursos externos, como bases de datos o servicios de red, son inherentemente más lentas que la ejecución de código en memoria. Incluir estas operaciones en las pruebas unitarias puede alargar drásticamente el tiempo de ejecución de la suite de pruebas, lo que desincentiva a los desarrolladores a ejecutarlas con la frecuencia necesaria. Un conjunto de pruebas que tarda demasiado en completarse puede llevar a la "fatiga de prueba", donde los desarrolladores optan por ejecutar las pruebas con menor asiduidad o incluso las omiten, lo que anula el propósito de la detección temprana de errores y puede generar una falsa sensación de seguridad.Otro desafío es el no determinismo.4 Los resultados de las pruebas pueden variar debido a factores externos incontrolables, como el estado actual de una base de datos, la disponibilidad de un servicio de red, o la velocidad de respuesta de una API de terceros. Esto puede resultar en pruebas que "fallan intermitentemente" (conocidas como "flaky tests"), lo que erosiona la confianza del equipo en la fiabilidad de la suite de pruebas. Por ejemplo, se han reportado problemas al mockear tests que utilizan bases de datos como PostgreSQL, donde la configuración de datos ficticios puede llevar a errores de compilación.6Además, la complejidad de configuración es un obstáculo considerable. Para ejecutar pruebas que interactúan con dependencias reales, a menudo es necesario configurar entornos complejos, lo que implica levantar bases de datos, establecer credenciales de API o preparar datos específicos. Esta sobrecarga de configuración desvía tiempo y recursos que podrían dedicarse al desarrollo de funcionalidades. Algunas APIs externas también pueden implicar costos asociados a cada llamada, lo que hace inviable su uso extensivo en entornos de prueba. La consecuencia directa de pruebas lentas e inestables es una disminución en su uso. Si una suite de pruebas se percibe como una carga en lugar de una herramienta útil, los desarrolladores la utilizarán menos, lo que debilita el proceso de control de calidad. La simulación de estas dependencias se presenta como una solución directa a estos problemas, permitiendo que las pruebas unitarias sean rápidas, consistentes y verdaderamente útiles.1.3 ¿Qué es Mockito? (Definición, Propósito y Relación con TDD/BDD y JUnit)Mockito es un framework de código abierto diseñado para facilitar la creación de pruebas unitarias en Java, publicado bajo la licencia MIT.7 Su popularidad se ha extendido, y ha sido adaptado para su uso en otros lenguajes de programación de la JVM como Kotlin, Scala o Groovy.4El propósito principal de Mockito es permitir la creación de "objetos dobles de prueba" o "mock objects" (objetos simulados).1 Estos objetos se utilizan para simular el comportamiento de las dependencias de una clase, lo que posibilita probar la clase bajo examen de forma completamente aislada, sin invocar las implementaciones reales de sus dependencias.1 Esta técnica garantiza que la lógica de la unidad de código que se está evaluando es lo único que se verifica, eliminando la influencia de factores externos.Mockito es una herramienta fundamental en el contexto del Desarrollo Guiado por Pruebas (TDD) y el Desarrollo Dirigido por el Comportamiento (BDD).7 En TDD, las pruebas se escriben antes que el código de producción. Mockito permite definir el comportamiento esperado de las dependencias (el "contrato") incluso antes de que existan sus implementaciones concretas. Este enfoque de "diseño primero", habilitado por el mocking, impulsa a los desarrolladores a pensar en interfaces limpias y en la inyección de dependencias desde el principio, lo que conduce a una arquitectura de software más modular y fácilmente testeable. El patrón "Given-When-Then" (Dado-Cuando-Entonces), que estructura las pruebas en tres fases claras—configuración de un estado inicial, ejecución de una acción, y verificación de un resultado—se alinea perfectamente con la filosofía de Mockito.3 Esta alineación no solo facilita la escritura de pruebas, sino que también promueve un diseño de software sólido y desacoplado, una habilidad de gran valor para cualquier desarrollador.La integración de Mockito con JUnit es fluida y natural.1 JUnit, al ser el framework de pruebas unitarias más extendido en Java, proporciona la estructura para escribir y ejecutar los tests, incluyendo anotaciones para la configuración (@Before, @After) y los métodos de prueba (@Test). Mockito, por su parte, se encarga de la creación y gestión de los objetos simulados, complementando a JUnit al permitir el control preciso sobre las dependencias durante la ejecución de las pruebas.11.4 Beneficios Clave de Usar MockitoLa adopción de Mockito en un proyecto de desarrollo de software ofrece múltiples ventajas que impactan directamente en la calidad del código y la eficiencia del equipo.El beneficio más significativo es el aislamiento de las pruebas.1 Mockito permite que una unidad de código se pruebe de forma independiente, sin que las dependencias externas, como bases de datos, servicios web o APIs de terceros, influyan en el resultado de la prueba. Esto asegura que si una prueba falla, la causa se atribuye directamente a un error en la unidad de código que se está probando, y no a un problema en una dependencia externa o en el entorno.La velocidad de ejecución es otro punto fuerte.3 Al simular el comportamiento de las dependencias en lugar de interactuar con sistemas reales que pueden ser lentos o remotos, las pruebas unitarias se ejecutan de manera significativamente más rápida. Esta rapidez facilita la ejecución frecuente de la suite de pruebas, lo cual es vital para mantener un ciclo de desarrollo ágil y para obtener retroalimentación casi instantánea sobre los cambios de código.La fiabilidad y el determinismo de las pruebas mejoran notablemente.4 Dado que el comportamiento de las dependencias está completamente controlado por los objetos mock, los resultados de las pruebas son consistentes y predecibles. Se eliminan las variables externas que podrían causar fallos intermitentes o "flaky tests", lo que aumenta la confianza en la suite de pruebas. La combinación de velocidad y determinismo no solo mejora la calidad del código, sino que también acelera el ciclo de retroalimentación para el desarrollador. Una retroalimentación rápida es fundamental para el aprendizaje y la mejora continua, especialmente para desarrolladores junior, ya que les permite corregir su curso rápidamente y comprender el impacto de sus cambios de forma inmediata y clara.Además, Mockito facilita la depuración. Cuando una prueba falla, la causa raíz del problema es más sencilla de identificar, ya que el fallo está confinado a la unidad bajo prueba y no a una compleja interacción con una dependencia externa. Esto reduce el tiempo dedicado a la resolución de problemas.El uso de Mockito también fomenta un buen diseño de software.2 La necesidad de mockear dependencias promueve patrones de diseño como la inyección de dependencias y el bajo acoplamiento. Un código con bajo acoplamiento es más modular, flexible y, en última instancia, más fácil de mantener y evolucionar. Finalmente, Mockito permite la prueba de escenarios complejos que serían difíciles o imposibles de replicar en un entorno real, como errores de red, respuestas específicas de APIs o condiciones de carrera. Esto asegura una cobertura de pruebas más exhaustiva para situaciones límite.2. Conceptos Fundamentales de Mockito: Tu Caja de HerramientasPara dominar Mockito, es esencial comprender sus conceptos centrales, que actúan como los pilares sobre los cuales se construyen las pruebas unitarias efectivas. Estos conceptos incluyen la creación de mocks, la definición de su comportamiento (stubbing), la verificación de interacciones y el uso de herramientas avanzadas como los argument matchers y la inyección de mocks.2.1 Mocks: Creación de Objetos SimuladosUn "mock object" es una implementación simulada o "falsa" de una dependencia real, diseñada específicamente para el entorno de prueba.1 Estos objetos imitan el comportamiento de sus contrapartes reales, permitiendo a los desarrolladores controlar y predecir sus respuestas durante la ejecución de los tests. El objetivo es aislar la unidad de código bajo prueba, asegurando que su lógica se evalúe sin interferencias de componentes externos.Mockito ofrece dos métodos principales para crear mocks:Creación Manual (Mockito.mock()): Este es el método fundamental y más directo para instanciar un objeto mock. Se invoca directamente, pasando la clase o interfaz de la que se desea crear el mock.Javaimport static org.mockito.Mockito.mock;
+import java.util.List;
+
+List mockedList = mock(List.class); // Crea un mock de la interfaz List
+Este enfoque es particularmente útil en escenarios donde se necesita una creación dinámica de mocks dentro de un método de prueba, o en contextos donde las anotaciones de Mockito no son aplicables o preferibles. Proporciona un control explícito sobre la creación de cada mock.Uso de Anotación (@Mock): Para una configuración más limpia y declarativa, Mockito proporciona la anotación @Mock. Al aplicar esta anotación a un campo dentro de la clase de prueba, Mockito se encarga automáticamente de inicializar el objeto mock correspondiente. Esto reduce significativamente el código repetitivo (boilerplate) y mejora la legibilidad de la clase de prueba.Javaimport org.mockito.Mock;
+import java.util.List;
+
+public class MyServiceTest {
+    @Mock
+    private List<String> mockedList; // El mock se inicializará automáticamente
+    //...
+}
+Para que la anotación @Mock funcione correctamente, es necesario configurar un "test runner" de JUnit (como @RunWith(MockitoJUnitRunner.class) para JUnit 4) o una extensión de JUnit (como @ExtendWith(MockitoExtension.class) para JUnit 5). Alternativamente, se puede invocar explícitamente MockitoAnnotations.openMocks(this) en un método anotado con @Before o @BeforeEach dentro de la clase de prueba.1La elección entre mock() y @Mock depende del estilo de codificación y del contexto de la prueba. @Mock es una excelente opción para la mayoría de los casos de uso estándar, ya que simplifica la configuración y hace que la intención del código sea más evidente. Sin embargo, mock() ofrece una flexibilidad invaluable para situaciones más dinámicas o complejas. Para los desarrolladores junior, comenzar con @Mock es recomendable debido a su simplicidad y la forma en que promueve un código de prueba más limpio y fácil de entender.2.2 Stubbing: Definiendo el Comportamiento de los MocksEl "stubbing" es el proceso crucial de programar el comportamiento de un objeto mock.1 Consiste en instruir al mock sobre qué valores debe retornar o qué acciones debe ejecutar cuando se invocan sus métodos durante la ejecución de la prueba. Sin un stubbing explícito, los mocks de Mockito devuelven valores por defecto, como null para objetos, 0 para tipos primitivos numéricos y false para booleanos.2Esta capacidad de definir el comportamiento de los mocks es el corazón del control de dependencias en Mockito. Permite a los desarrolladores simular cualquier escenario imaginable (éxito, fallo, datos específicos, respuestas complejas, etc.) sin depender de la lógica real o del estado de las dependencias. Esto es fundamental para probar rutas de código complejas, casos límite y escenarios de error que serían difíciles, costosos o imposibles de replicar con dependencias reales. El stubbing transforma la prueba de un proceso reactivo (esperar a que aparezcan los errores) en uno proactivo (diseñar pruebas para exponer posibles problemas).Los métodos más comunes para el stubbing son:when().thenReturn(): Este es el método más utilizado y expresivo para especificar el valor de retorno de un método mockeado. Su sintaxis se lee de forma intuitiva como "cuando se llame a este método, entonces devuelve este valor".Javaimport static org.mockito.Mockito.when;
+import java.util.List;
+
+// Supongamos que 'mockedList' es un mock de List<String>
+when(mockedList.get(0)).thenReturn("primer elemento"); // S_S3, S_S10, S_B2, S_B12
+System.out.println(mockedList.get(0)); // Imprime "primer elemento"
+System.out.println(mockedList.get(999)); // Imprime "null" (comportamiento por defecto al no estar stubbeado)
+thenThrow(): Permite simular que un método mockeado lanza una excepción. Esto es vital para probar cómo el código bajo prueba maneja los errores y las condiciones excepcionales.Javawhen(mockedList.get(1)).thenThrow(new RuntimeException("Elemento no encontrado")); // S_S3, S_S10, S_B2, S_B12
+// La siguiente línea, al ejecutarse, lanzaría RuntimeException
+// mockedList.get(1);
+doThrow().when(): Este método se utiliza específicamente para stubbear métodos void (aquellos que no devuelven ningún valor) para que lancen una excepción. También es la forma preferida para stubbear "spies" (objetos reales parcialmente mockeados) de manera segura, evitando que se invoque el método real antes de definir su comportamiento simulado.Javaimport static org.mockito.Mockito.doThrow;
+import java.util.List;
+
+// Supongamos que 'mockedList' es un mock de List<String>
+doThrow(new RuntimeException("La operación clear falló")).when(mockedList).clear(); // S_S8, S_S10, S_B2, S_B12
+// La siguiente línea, al ejecutarse, lanzaría RuntimeException
+// mockedList.clear();
+doReturn().when(): Una alternativa a when().thenReturn() que puede ser útil en ciertos escenarios, especialmente cuando se trabaja con spies o cuando la legibilidad se beneficia de esta sintaxis para métodos que no devuelven void.Para desarrolladores junior, comprender el stubbing es fundamental, ya que les permite anticipar todos los posibles resultados de una dependencia (éxitos, fallos, datos variados) y asegurar que la unidad bajo prueba maneje cada uno de ellos correctamente. Esto es crucial para diseñar pruebas robustas y completas, cubriendo tanto los "caminos felices" como los "caminos infelices" de la ejecución del código.2.3 Verificación: Asegurando que las Interacciones OcurrieronLa "verificación" es el proceso mediante el cual se confirma que los métodos de un objeto mock fueron invocados de la manera esperada por el código bajo prueba.1 No se trata únicamente de que el código produzca el resultado deseado, sino de que interactúe correctamente con sus dependencias, respetando el contrato de la lógica de negocio. Una verificación robusta es esencial para evitar "pruebas perezosas" que puedan pasar sin validar realmente el flujo de control o los efectos secundarios esperados.Consideremos un ejemplo: si un servicio de usuario, después de guardar un usuario, debe enviar un correo electrónico de bienvenida, una prueba completa no solo afirmaría que el usuario fue guardado, sino que también verificaría que el método de envío de correo electrónico en el servicio de correo fue invocado. Esto asegura que todas las colaboraciones y efectos secundarios esperados entre objetos realmente ocurran.Los métodos de verificación más utilizados son:verify(): Es el método principal para verificar que un método específico de un mock fue llamado. Por defecto, verify() comprueba que el método fue invocado exactamente una vez.Javaimport static org.mockito.Mockito.verify;
+import java.util.List;
+
+// Supongamos que 'mockedList' es un mock de List<String>
+mockedList.add("uno");
+verify(mockedList).add("uno"); // Verifica que add("uno") fue llamado exactamente una vez
+times(int): Permite especificar un número exacto de invocaciones esperadas para un método. times(1) es el comportamiento por defecto si no se especifica explícitamente.2JavamockedList.add("dos veces");
+mockedList.add("dos veces");
+verify(mockedList, times(2)).add("dos veces"); // Verifica que add("dos veces") fue llamado dos veces
+never(): Es un alias de times(0) y se utiliza para verificar que un método específico nunca fue invocado en el mock.2Javaverify(mockedList, never()).add("nunca sucedió"); // Verifica que add("nunca sucedió") nunca fue llamado
+atLeast(int) / atMost(int): Estos métodos permiten verificar un número mínimo o máximo de invocaciones. atLeastOnce() es un alias conveniente para atLeast(1).2verifyZeroInteractions(): Este método asegura que no hubo ninguna interacción con los mocks especificados durante la ejecución de la prueba.2 Es útil para confirmar que ciertos mocks no fueron utilizados en absoluto.verifyNoMoreInteractions(): Se utiliza para detectar llamadas a métodos en un mock que no han sido explícitamente verificadas por otras sentencias verify. Es una herramienta para asegurar que no existen interacciones "fantasma" o inesperadas.2 Sin embargo, su uso excesivo puede hacer que las pruebas sean frágiles y difíciles de mantener, por lo que se recomienda usarlo con precaución (ver sección 4.5).Para los desarrolladores junior, la verificación es fundamental para garantizar que el "contrato" entre la unidad bajo prueba y sus colaboradores (las dependencias) se cumple. Se trata de validar tanto el cómo (las interacciones) como el qué (los valores de retorno) del comportamiento del código.2.4 Argument Matchers: Flexibilidad en la Definición y Verificación de ArgumentosLos "argument matchers" (o "coincidencias de argumentos") son una característica poderosa de Mockito que introduce flexibilidad al permitir el uso de "comodines" en lugar de valores exactos para los argumentos de los métodos.1 Esta capacidad es crucial tanto al definir el comportamiento de los mocks (stubbing) como al verificar que las llamadas a los métodos ocurrieron con los argumentos esperados. Son especialmente útiles cuando el valor preciso de un argumento no es relevante para la lógica de la prueba, o cuando el argumento es un objeto complejo cuya igualdad no se puede determinar fácilmente con una simple comparación.La flexibilidad que ofrecen los argument matchers permite escribir pruebas más robustas que no se rompen ante cambios irrelevantes en los datos o en la implementación interna de los objetos. Por ejemplo, si un método espera un objeto User, pero la prueba solo necesita verificar que el método fue llamado con cualquier objeto User (y no uno con propiedades específicas), un matcher como any(User.class) es ideal.Algunos de los matchers más comunes incluyen:any() / anyInt() / anyString() / any(Class.class): Estos matchers coinciden con cualquier valor de un tipo de dato específico.Javaimport static org.mockito.Mockito.anyInt;
+import java.util.List;
+
+// Supongamos que 'mockedList' es un mock de List<String>
+when(mockedList.get(anyInt())).thenReturn("elemento genérico"); // Stubbea para cualquier índice entero
+System.out.println(mockedList.get(999)); // Imprime "elemento genérico"
+eq(): Este matcher se utiliza para especificar que un argumento debe coincidir con un valor exacto. Es particularmente útil cuando se mezclan otros argument matchers con valores literales o específicos en la misma llamada a método.1Javaimport static org.mockito.Mockito.eq;
+
+// Supongamos que 'myService' es un mock de MyService
+when(myService.doSomething(eq("valorEspecifico"), anyInt())).thenReturn("resultado");
+// Aquí, el primer argumento debe ser "valorEspecifico" exactamente, pero el segundo puede ser cualquier entero.
+argThat(): Permite la creación de matchers personalizados. Si la lógica de coincidencia estándar no es suficiente, se puede implementar la interfaz ArgumentMatcher para definir una lógica de comparación a medida.2Una regla crucial a recordar al usar argument matchers es la de "todos o ninguno": si se utiliza al menos un argument matcher en una llamada a un método (ya sea para stubbing o verificación), todos los argumentos de esa llamada deben ser proporcionados por matchers.9 Mezclar valores literales directamente con matchers (sin envolver los literales con eq()) resultará en un error de InvalidUseOfMatchersException. Esta es una fuente común de frustración para los principiantes, pero una vez comprendida, permite una gran flexibilidad en las pruebas.2.5 Inyección de Mocks: Simplificando la Configuración (@InjectMocks)La anotación @InjectMocks de Mockito es una herramienta poderosa que simplifica significativamente la configuración de las pruebas unitarias, especialmente cuando la clase bajo prueba tiene múltiples dependencias que necesitan ser mockeadas.1 Su propósito principal es inyectar automáticamente los mocks creados con @Mock (o @Spy) en los campos de la instancia de la clase que se está probando.En lugar de instanciar manualmente la clase bajo prueba y pasarle cada mock a través de su constructor o setters, @InjectMocks se encarga de este proceso. Mockito intentará inyectar los mocks por constructor, por setter o por campo, en ese orden.Consideremos un ejemplo típico en una arquitectura de capas, donde un UserService depende de un UserRepository:Javaimport org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// Clase bajo prueba
+class UserService {
+    private UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public String getUserNameById(Long id) {
+        // Lógica para encontrar el usuario y devolver su nombre
+        // Por simplicidad, asumimos que UserRepository.findById devuelve un String
+        return userRepository.findById(id);
+    }
+}
+
+// Interfaz de repositorio (dependencia)
+interface UserRepository {
+    String findById(Long id);
+}
+
+@ExtendWith(MockitoExtension.class) // Habilita las anotaciones de Mockito para JUnit 5
+public class UserServiceTest {
+
+    @Mock // Crea un mock de UserRepository
+    private UserRepository mockUserRepository;
+
+    @InjectMocks // Inyecta mockUserRepository en una instancia de UserService
+    private UserService userService;
+
+    // No se necesita @BeforeEach para inicializar mocks si se usa @ExtendWith(MockitoExtension.class)
+    // o @RunWith(MockitoJUnitRunner.class) para JUnit 4
+
+    @Test
+    void testGetUserNameById() {
+        // Given (Dado): Configura el comportamiento del mock
+        // Cuando se llame a mockUserRepository.findById con "P123", devuelve "Laptop"
+        when(mockUserRepository.findById(1L)).thenReturn("Juan Perez");
+
+        // When (Cuando): Ejecuta el método de la clase bajo prueba
+        String userName = userService.getUserNameById(1L);
+
+        // Then (Entonces): Verifica el resultado y las interacciones
+        assertEquals("Juan Perez", userName); // Verifica el resultado
+        verify(mockUserRepository).findById(1L); // Verifica que el método del mock fue llamado
+    }
+}
+En este ejemplo, @Mock private UserRepository mockUserRepository; crea el objeto simulado del repositorio. Luego, @InjectMocks private UserService userService; le indica a Mockito que cree una instancia de UserService e intente inyectar mockUserRepository en ella. Esto elimina la necesidad de escribir userService = new UserService(mockUserRepository); manualmente en cada método de prueba o en un método @BeforeEach.La principal ventaja de @InjectMocks es la reducción de código repetitivo y la mejoría de la legibilidad de las clases de prueba. Sin embargo, es importante recordar que @InjectMocks solo funciona con clases, no con interfaces, y que su uso debe ir acompañado de un runner o extensión de Mockito para su inicialización automática.12 Para los desarrolladores junior, @InjectMocks representa una forma eficiente de configurar sus pruebas, permitiéndoles centrarse en la lógica de la prueba en sí, en lugar de en la configuración de las dependencias.Tabla de Métodos y Anotaciones Esenciales de MockitoEsta tabla proporciona una referencia rápida de las funciones más utilizadas de Mockito, ayudando a los desarrolladores a comprender su propósito y sintaxis de un vistazo.Método/AnotaciónPropósito PrincipalEjemplo de Uso BreveMockito.mock()Crea un objeto mock de una clase o interfaz.List mockedList = mock(List.class);@MockAnotación para crear y auto-inicializar un objeto mock.@Mock private MyDependency myMock;@InjectMocksAnotación para inyectar automáticamente mocks en la clase bajo prueba.@InjectMocks private MyService myService;when().thenReturn()Define el valor de retorno de un método mockeado.when(mock.someMethod()).thenReturn("result");doThrow().when()Hace que un método void mockeado lance una excepción.doThrow(new RuntimeException()).when(mock).voidMethod();verify()Verifica que un método fue llamado en un mock.verify(mock).someMethod();times(int)Especifica el número exacto de invocaciones esperadas.verify(mock, times(2)).someMethod();never()Verifica que un método nunca fue llamado.verify(mock, never()).someMethod();any() / anyInt() / anyString()Coincide con cualquier valor de un tipo dado en un argumento.when(mock.method(anyString())).thenReturn("val");eq()Coincide con un valor exacto cuando se usan otros matchers.when(mock.method(eq("val"), anyInt())).thenReturn("res");inOrder()Permite verificar que las interacciones ocurrieron en un orden específico.InOrder inOrder = inOrder(mock1, mock2); inOrder.verify(mock1).call();ArgumentCaptorCaptura argumentos pasados a un método para una verificación detallada.ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class); verify(mock).method(captor.capture());verifyZeroInteractions()Asegura que no hubo ninguna interacción con los mocks especificados.verifyZeroInteractions(mock1, mock2);verifyNoMoreInteractions()Detecta llamadas no verificadas en un mock.verifyNoMoreInteractions(mockedList);3. Mockito en Acción: Ejemplos Prácticos Paso a PasoPara solidificar la comprensión de Mockito, la mejor manera es a través de ejemplos prácticos. A continuación, se presentan escenarios comunes que ilustran cómo aplicar los conceptos fundamentales en un entorno de prueba real.3.1 Configuración Básica de un Test con JUnit y MockitoAntes de sumergirse en ejemplos específicos, es fundamental entender cómo configurar un entorno de prueba básico que combine JUnit y Mockito. Para JUnit 5, se utiliza la extensión MockitoExtension.Dependencias (Maven pom.xml):XML<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+Estructura de una clase de prueba básica:Javaimport org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// 1. Clase de servicio (la que queremos probar)
+class ProductService {
+    private ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    public String getProductName(String productId) {
+        return productRepository.findNameById(productId);
+    }
+}
+
+// 2. Interfaz de repositorio (la dependencia que mockearemos)
+interface ProductRepository {
+    String findNameById(String id);
+}
+
+// 3. Clase de prueba
+@ExtendWith(MockitoExtension.class) // Habilita la integración de Mockito con JUnit 5
+public class ProductServiceTest {
+
+    @Mock // Crea un mock de ProductRepository
+    private ProductRepository mockProductRepository;
+
+    @InjectMocks // Inyecta mockProductRepository en una instancia de ProductService
+    private ProductService productService;
+
+    @Test
+    void shouldReturnProductNameWhenFound() {
+        // Given (Dado): Configura el comportamiento del mock
+        // Cuando se llame a mockProductRepository.findNameById con "P123", devuelve "Laptop"
+        when(mockProductRepository.findNameById("P123")).thenReturn("Laptop");
+
+        // When (Cuando): Ejecuta el método de la clase bajo prueba
+        String productName = productService.getProductName("P123");
+
+        // Then (Entonces): Verifica el resultado y las interacciones
+        assertEquals("Laptop", productName); // Verifica el resultado
+        verify(mockProductRepository).findNameById("P123"); // Verifica que el método del mock fue llamado
+    }
+}
+Este es el patrón "Given-When-Then" en acción.3 Primero, se configura el entorno (Given) definiendo el comportamiento de los mocks. Luego, se ejecuta la acción que se desea probar (When). Finalmente, se verifica que el resultado es el esperado y que las interacciones con los mocks ocurrieron correctamente (Then).3.2 Ejemplo 1: Mocking de una Capa de Repositorio (Simulando Acceso a Datos)Este ejemplo profundiza en cómo mockear una capa de acceso a datos, un escenario muy común en el desarrollo de aplicaciones.Javaimport org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+// Clase de Dominio
+class User {
+    private Long id;
+    private String name;
+    private int age;
+
+    public User(Long id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public int getAge() { return age; }
+}
+
+// Interfaz del Repositorio (simula la interacción con la base de datos)
+interface UserRepository {
+    User findUserById(Long id);
+    void saveUser(User user);
+    void deleteUser(Long id);
+}
+
+// Clase de Servicio (la que queremos probar)
+class UserService {
+    private UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User getUserDetails(Long userId) {
+        return userRepository.findUserById(userId);
+    }
+
+    public void registerUser(User user) {
+        userRepository.saveUser(user);
+    }
+
+    public boolean removeUser(Long userId) {
+        User user = userRepository.findUserById(userId);
+        if (user!= null) {
+            userRepository.deleteUser(userId);
+            return true;
+        }
+        return false;
+    }
+}
+
+@ExtendWith(MockitoExtension.class)
+public class UserServiceDataTest {
+
+    @Mock
+    private UserRepository mockUserRepository; // Mock de la dependencia de la base de datos
+
+    @InjectMocks
+    private UserService userService; // La instancia de UserService con el mock inyectado
+
+    @Test
+    void shouldReturnUserDetailsWhenUserExists() {
+        // Given: Un usuario simulado que el repositorio devolverá
+        User expectedUser = new User(1L, "Alice", 30);
+        when(mockUserRepository.findUserById(1L)).thenReturn(expectedUser); // [3]
+
+        // When: Llamamos al método del servicio
+        User actualUser = userService.getUserDetails(1L);
+
+        // Then: Verificamos que el resultado es el esperado y que el mock fue llamado
+        assertEquals(expectedUser, actualUser);
+        verify(mockUserRepository).findUserById(1L); // [12]
+    }
+
+    @Test
+    void shouldReturnNullWhenUserDoesNotExist() {
+        // Given: El repositorio devuelve null para un ID no existente
+        when(mockUserRepository.findUserById(2L)).thenReturn(null);
+
+        // When: Llamamos al método del servicio
+        User actualUser = userService.getUserDetails(2L);
+
+        // Then: Verificamos que el resultado es null
+        assertNull(actualUser);
+        verify(mockUserRepository).findUserById(2L);
+    }
+
+    @Test
+    void shouldRegisterNewUser() {
+        // Given: Un nuevo usuario para registrar
+        User newUser = new User(3L, "Bob", 25);
+        // No necesitamos stubbear saveUser si no devuelve nada y solo queremos verificar la llamada
+
+        // When: Llamamos al método del servicio para registrar
+        userService.registerUser(newUser);
+
+        // Then: Verificamos que el método saveUser del mock fue llamado con el usuario correcto
+        verify(mockUserRepository).saveUser(newUser); // [13]
+    }
+
+    @Test
+    void shouldRemoveUserWhenUserExists() {
+        // Given: Un usuario existente para eliminar
+        User userToRemove = new User(4L, "Charlie", 40);
+        when(mockUserRepository.findUserById(4L)).thenReturn(userToRemove);
+        // No necesitamos stubbear deleteUser si no devuelve nada y solo queremos verificar la llamada
+        // Mockito.doNothing().when(mockUserRepository).deleteUser(anyLong()); // [13] - explícito para métodos void
+
+        // When: Llamamos al método del servicio para eliminar
+        boolean removed = userService.removeUser(4L);
+
+        // Then: Verificamos que el usuario fue encontrado y el método deleteUser fue llamado
+        assertEquals(true, removed);
+        verify(mockUserRepository).findUserById(4L);
+        verify(mockUserRepository).deleteUser(4L); // [13]
+    }
+
+    @Test
+    void shouldNotRemoveUserWhenUserDoesNotExist() {
+        // Given: Un usuario que no existe
+        when(mockUserRepository.findUserById(5L)).thenReturn(null);
+
+        // When: Intentamos eliminar un usuario no existente
+        boolean removed = userService.removeUser(5L);
+
+        // Then: Verificamos que no se eliminó y que deleteUser nunca fue llamado
+        assertEquals(false, removed);
+        verify(mockUserRepository).findUserById(5L);
+        verify(mockUserRepository, never()).deleteUser(5L);
+    }
+}
+Este ejemplo demuestra cómo Mockito permite simular el comportamiento de un repositorio de datos sin necesidad de una base de datos real. Esto hace que las pruebas sean rápidas, aisladas y deterministas.3.3 Ejemplo 2: Verificación de Llamadas a Métodos y Captura de Argumentos (ArgumentCaptor)A veces, no solo se necesita verificar que un método fue llamado, sino también inspeccionar los argumentos exactos con los que fue invocado, especialmente si esos argumentos son objetos complejos o se generan dinámicamente dentro del código bajo prueba. Para esto, Mockito proporciona ArgumentCaptor.4Javaimport org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// Clase de Dominio (simplificada)
+class Product {
+    private String id;
+    private String name;
+    private double price;
+
+    public Product(String id, String name, double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public double getPrice() { return price; }
+
+    // Sobrescribir equals y hashCode para comparaciones de objetos
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null |
+
+| getClass()!= o.getClass()) return false;
+        Product product = (Product) o;
+        return Double.compare(product.price, price) == 0 &&
+               id.equals(product.id) &&
+               name.equals(product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, name, price);
+    }
+}
+
+// Interfaz de Servicio de Notificación (dependencia)
+interface NotificationService {
+    void sendProductUpdate(Product product);
+}
+
+// Clase de Servicio (la que queremos probar)
+class InventoryService {
+    private NotificationService notificationService;
+
+    public InventoryService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    public void updateProductPrice(String productId, String newName, double newPrice) {
+        // En un escenario real, aquí se cargaría el producto, se actualizaría y se guardaría.
+        // Para este ejemplo, solo creamos un nuevo producto y enviamos la notificación.
+        Product updatedProduct = new Product(productId, newName, newPrice);
+        notificationService.sendProductUpdate(updatedProduct);
+    }
+}
+
+@ExtendWith(MockitoExtension.class)
+public class InventoryServiceTest {
+
+    @Mock
+    private NotificationService mockNotificationService;
+
+    @InjectMocks
+    private InventoryService inventoryService;
+
+    // ArgumentCaptor para capturar el objeto Product que se pasa al método sendProductUpdate
+    @Captor // Anotación para auto-inicializar el ArgumentCaptor
+    private ArgumentCaptor<Product> productCaptor; // [4, 15]
+
+    @Test
+    void shouldSendNotificationWithUpdatedProductDetails() {
+        String productId = "ABC001";
+        String newName = "Smartphone X";
+        double newPrice = 799.99;
+
+        // When: Llamamos al método bajo prueba
+        inventoryService.updateProductPrice(productId, newName, newPrice);
+
+        // Then: Verificamos que sendProductUpdate fue llamado y capturamos el argumento
+        verify(mockNotificationService).sendProductUpdate(productCaptor.capture()); // [4, 15]
+
+        // Obtenemos el valor capturado
+        Product capturedProduct = productCaptor.getValue(); // [15]
+
+        // Verificamos las propiedades del objeto capturado
+        assertEquals(productId, capturedProduct.getId());
+        assertEquals(newName, capturedProduct.getName());
+        assertEquals(newPrice, capturedProduct.getPrice(), 0.001); // Usar delta para doubles
+    }
+}
+ArgumentCaptor permite una verificación más precisa de los argumentos, lo cual es invaluable cuando se trabaja con objetos complejos. La anotación @Captor simplifica su inicialización, al igual que @Mock y @InjectMocks.93.4 Ejemplo 3: Manejo de Excepciones con MocksSimular el lanzamiento de excepciones por parte de las dependencias es crucial para probar cómo el código bajo prueba maneja los escenarios de error.Javaimport org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// Interfaz de Servicio Externo (dependencia que puede lanzar excepciones)
+interface ExternalService {
+    String fetchData(String query);
+    void processData(String data) throws ServiceUnavailableException;
+}
+
+// Excepción personalizada para simular un fallo del servicio
+class ServiceUnavailableException extends Exception {
+    public ServiceUnavailableException(String message) {
+        super(message);
+    }
+}
+
+// Clase de Servicio (la que queremos probar)
+class DataProcessor {
+    private ExternalService externalService;
+
+    public DataProcessor(ExternalService externalService) {
+        this.externalService = externalService;
+    }
+
+    public String retrieveAndProcess(String query) throws ServiceUnavailableException {
+        String data = externalService.fetchData(query);
+        if (data == null |
+
+| data.isEmpty()) {
+            throw new IllegalArgumentException("Data cannot be empty.");
+        }
+        externalService.processData(data); // Este método puede lanzar ServiceUnavailableException
+        return "Processed: " + data;
+    }
+}
+
+@ExtendWith(MockitoExtension.class)
+public class DataProcessorTest {
+
+    @Mock
+    private ExternalService mockExternalService;
+
+    @InjectMocks
+    private DataProcessor dataProcessor;
+
+    @Test
+    void shouldThrowExceptionWhenServiceFailsToProcessData() {
+        String testQuery = "invalid_data";
+        String fetchedData = "some_data";
+
+        // Given: fetchData devuelve datos, pero processData lanza una excepción
+        when(mockExternalService.fetchData(testQuery)).thenReturn(fetchedData);
+        when(mockExternalService.processData(fetchedData))
+           .thenThrow(new ServiceUnavailableException("External service is down")); // S_S3, S_S10, S_B2, S_B12
+
+        // When/Then: Verificamos que el método retrieveAndProcess lanza la excepción esperada
+        ServiceUnavailableException thrown = assertThrows(ServiceUnavailableException.class, () -> {
+            dataProcessor.retrieveAndProcess(testQuery);
+        });
+
+        // Verificamos el mensaje de la excepción
+        assertEquals("External service is down", thrown.getMessage());
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenFetchedDataIsEmpty() {
+        String testQuery = "empty_data";
+
+        // Given: fetchData devuelve una cadena vacía
+        when(mockExternalService.fetchData(testQuery)).thenReturn("");
+
+        // When/Then: Verificamos que el método retrieveAndProcess lanza IllegalArgumentException
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            dataProcessor.retrieveAndProcess(testQuery);
+        });
+
+        assertEquals("Data cannot be empty.", thrown.getMessage());
+    }
+}
+Este ejemplo ilustra cómo when().thenThrow() o doThrow().when() son esenciales para simular condiciones de fallo y verificar que el código bajo prueba maneja las excepciones de manera adecuada.3.5 Ejemplo 4: Verificación de Orden de Interacciones (InOrder)En algunos escenarios de negocio, el orden en que se invocan los métodos en diferentes mocks (o incluso en el mismo mock) es crítico. Mockito proporciona la clase InOrder para verificar esta secuencia de llamadas.2Javaimport org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.when;
+
+// Interfaz de Log (dependencia 1)
+interface AuditLog {
+    void logStart(String operation);
+    void logEnd(String operation);
+}
+
+// Interfaz de Procesador de Datos (dependencia 2)
+interface DataProcessorDependency {
+    void prepareData();
+    void saveData();
+}
+
+// Clase de Servicio (la que queremos probar)
+class WorkflowManager {
+    private AuditLog auditLog;
+    private DataProcessorDependency dataProcessor;
+
+    public WorkflowManager(AuditLog auditLog, DataProcessorDependency dataProcessor) {
+        this.auditLog = auditLog;
+        this.dataProcessor = dataProcessor;
+    }
+
+    public void executeWorkflow(String workflowName) {
+        auditLog.logStart(workflowName);
+        dataProcessor.prepareData();
+        dataProcessor.saveData();
+        auditLog.logEnd(workflowName);
+    }
+}
+
+@ExtendWith(MockitoExtension.class)
+public class WorkflowManagerTest {
+
+    @Mock
+    private AuditLog mockAuditLog;
+
+    @Mock
+    private DataProcessorDependency mockDataProcessor;
+
+    @InjectMocks
+    private WorkflowManager workflowManager;
+
+    @Test
+    void shouldExecuteWorkflowStepsInCorrectOrder() {
+        String workflowName = "UserRegistrationWorkflow";
+
+        // When: Ejecutamos el método bajo prueba
+        workflowManager.executeWorkflow(workflowName);
+
+        // Then: Verificamos el orden de las interacciones
+        // Creamos un objeto InOrder, pasando todos los mocks que necesitan ser verificados en orden
+        InOrder inOrder = inOrder(mockAuditLog, mockDataProcessor); // [9, 12]
+
+        // Verificamos que logStart fue llamado en mockAuditLog
+        inOrder.verify(mockAuditLog).logStart(workflowName); // [9]
+
+        // Verificamos que prepareData fue llamado en mockDataProcessor (después de logStart)
+        inOrder.verify(mockDataProcessor).prepareData(); // [9]
+
+        // Verificamos que saveData fue llamado en mockDataProcessor (después de prepareData)
+        inOrder.verify(mockDataProcessor).saveData(); // [9]
+
+        // Verificamos que logEnd fue llamado en mockAuditLog (después de saveData)
+        inOrder.verify(mockAuditLog).logEnd(workflowName); // [9]
+    }
+}
+Este ejemplo muestra cómo InOrder permite verificar una secuencia específica de llamadas a métodos en múltiples mocks. Es importante destacar que no es necesario verificar todas las interacciones, solo aquellas cuya secuencia es relevante para la lógica de la prueba.9 Esta capacidad es fundamental para validar flujos de trabajo complejos donde el orden de las operaciones es una parte integral del comportamiento correcto.4. Buenas Prácticas y Errores Comunes al Usar MockitoPara que Mockito sea una herramienta verdaderamente efectiva y no una fuente de frustración, es crucial adoptar ciertas buenas prácticas y ser consciente de los errores comunes que suelen cometer los desarrolladores, especialmente los junior.4.1 Verificar el Comportamiento, no la ImplementaciónUna de las reglas de oro en las pruebas unitarias es verificar el comportamiento, no la implementación interna.10 Esto significa que las pruebas deben centrarse en qué hace el código (su resultado observable y sus interacciones con las dependencias), en lugar de cómo lo hace (sus detalles internos, como algoritmos o variables temporales).Si una prueba verifica detalles de implementación, se vuelve frágil. Pequeños cambios internos en el código (refactorizaciones) que no alteran su comportamiento externo harían que la prueba falle innecesariamente. Esto genera una "fatiga de prueba" y desincentiva las refactorizaciones, lo que conduce a un código menos mantenible. Por el contrario, al verificar el comportamiento, las pruebas se mantienen robustas y permiten que el código evolucione sin romper la suite de pruebas constantemente. Esto es crucial para la longevidad y la adaptabilidad del software.4.2 Cuándo y Cómo Usar @Mock y @InjectMocksLas anotaciones @Mock y @InjectMocks son herramientas poderosas para simplificar la configuración de las pruebas, pero su uso incorrecto es una fuente común de errores.1@Mock: Se utiliza para crear un objeto mock de una clase o interfaz.1 Estos mocks simulan el comportamiento de las dependencias.@InjectMocks: Se utiliza para crear una instancia de la clase que se está probando y, automáticamente, inyectar los mocks creados con @Mock (o @Spy) en sus campos.1 Mockito intentará la inyección por constructor, luego por setter, y finalmente por campo.Errores comunes y cómo evitarlos:Uso incorrecto de @InjectMocks con interfaces: @InjectMocks solo es compatible con clases, no con interfaces.12 Si se intenta usar con una interfaz, la inyección fallará.No inicializar las anotaciones: Para que @Mock y @InjectMocks funcionen, es imprescindible usar un test runner de Mockito (ej., @ExtendWith(MockitoExtension.class) para JUnit 5 o @RunWith(MockitoJUnitRunner.class) para JUnit 4) o llamar explícitamente a MockitoAnnotations.openMocks(this) en un método @BeforeEach.1 Sin esta inicialización, los campos anotados serán null, lo que causará NullPointerExceptions.Confusión con @MockBean (Spring Boot): En aplicaciones Spring Boot, @MockBean es la anotación preferida para mockear dependencias que son beans de Spring. A diferencia de @Mock, @MockBean registra el mock en el contexto de la aplicación Spring y crea una nueva instancia para cada método de prueba, lo que asegura un aislamiento adecuado.12 Para proyectos Spring Boot, es crucial usar @MockBean en lugar de @Mock para los componentes gestionados por Spring.4.3 La Importancia de Especificar el Comportamiento de los MocksUn error frecuente, especialmente para los principiantes, es olvidar especificar el comportamiento de los mocks.12 Por defecto, los métodos de un mock que devuelven un valor retornarán null (para objetos), 0 (para números) o false (para booleanos) si no se les ha programado un comportamiento explícito.2Esto puede llevar a NullPointerExceptions inesperadas o a que las pruebas pasen con resultados incorrectos si el código bajo prueba espera un valor específico de la dependencia. Es fundamental utilizar when().thenReturn() (o doReturn().when(), doThrow().when(), etc.) para definir claramente lo que un mock debe hacer cuando se invoca uno de sus métodos.12 Esto asegura que el mock se comporta de la manera esperada por la lógica de negocio, permitiendo que la prueba se concentre en la unidad bajo examen.4.4 Evitar el Uso Excesivo de Mockito.reset()El método Mockito.reset() permite limpiar el estado de un objeto mock, eliminando todas las interacciones y stubbings previos.9 Aunque puede parecer útil, su uso excesivo es generalmente una mala práctica y puede llevar a pruebas frágiles y difíciles de entender.Cuando se utiliza reset(), una prueba puede depender del estado de un mock configurado en una prueba anterior, lo que introduce acoplamiento entre pruebas. Si la prueba anterior cambia o se elimina, la prueba que usa reset() podría fallar inesperadamente. La mejor práctica es asegurar que cada método de prueba sea completamente independiente y opere con mocks "frescos" y recién configurados. Esto se logra utilizando @Mock y MockitoExtension (o MockitoJUnitRunner), que garantizan que se crea una nueva instancia de los mocks para cada método de prueba, eliminando la necesidad de reiniciarlos manualmente.104.5 Diferencias entre verifyNoMoreInteractions() y never()Mockito ofrece varias formas de verificar que no hubo interacciones no deseadas con los mocks, y es importante entender la diferencia entre verifyNoMoreInteractions() y never().2never(): Es un alias de times(0).2 Se utiliza para verificar que un método específico de un mock nunca fue llamado. Es muy preciso y se enfoca en una interacción particular.Javaverify(mockedList, never()).add("elemento no deseado");
+verifyNoMoreInteractions(): Este método verifica que no hubo ninguna otra interacción con el mock especificado después de las interacciones que ya han sido verificadas.2 Es una verificación más amplia y se utiliza para asegurarse de que no hay "llamadas fantasma" o inesperadas que el código bajo prueba haya realizado.Aunque verifyNoMoreInteractions() puede ser útil para detectar interacciones no planificadas, su uso excesivo puede hacer que las pruebas sean demasiado rígidas y se rompan fácilmente si se añade una interacción legítima pero no verificada. A menudo, never() es preferible para expresar intenciones más claras sobre métodos que no deberían ser invocados bajo ciertas condiciones.4.6 Consideraciones sobre thenCallRealMethod()El método thenCallRealMethod() permite que un mock (o un spy) invoque la implementación real del método en lugar de su comportamiento simulado.9 Esto puede ser útil en escenarios de "partial mocking", donde solo se desea mockear algunos métodos de una clase mientras que otros ejecutan su lógica original.Sin embargo, esta característica debe usarse con extrema cautela.10 El propósito principal de las pruebas unitarias es aislar la unidad de código. Al llamar a métodos reales de una dependencia, se reintroduce el acoplamiento y se pierde parte del aislamiento, lo que puede hacer que la prueba sea menos determinista y más difícil de entender. Si se encuentra la necesidad de usar thenCallRealMethod() con frecuencia, podría ser una señal de que la clase bajo prueba tiene demasiadas responsabilidades o un diseño con alto acoplamiento, lo que sugiere una oportunidad para refactorizar.5. Mockito vs. PowerMock: ¿Cuándo elegir cada uno?En el ecosistema de pruebas de Java, Mockito y PowerMock son dos frameworks populares para la creación de objetos simulados. Si bien Mockito es la opción estándar para la mayoría de las necesidades de mocking, PowerMock ha sido históricamente necesario para escenarios más complejos. Comprender sus diferencias es crucial para tomar decisiones informadas en el diseño de las pruebas.55.1 Diferencias Clave y Capacidades (Métodos Estáticos, Finales, Privados)Tradicionalmente, Mockito se ha destacado por su simplicidad y facilidad de uso para mockear interfaces y clases concretas, centrándose en métodos de instancia.5 Sin embargo, Mockito no podía mockear directamente:Métodos estáticosMétodos finalesClases finalesConstructoresMétodos privadosAquí es donde PowerMock entró en juego.5 PowerMock es una extensión de frameworks como Mockito y EasyMock que utiliza la manipulación de bytecode y un cargador de clases personalizado para superar estas limitaciones. Esto le permite mockear componentes que Mockito no podía, lo que lo hacía invaluable para probar código legado o mal diseñado que dependía en gran medida de estas características "difíciles de mockear".55.2 La Evolución de Mockito 3.4+ para Métodos EstáticosCon la introducción de Mockito 3.4 y versiones posteriores, el framework añadió soporte nativo para el mocking de métodos estáticos a través de su nueva API MockedStatic [5, S

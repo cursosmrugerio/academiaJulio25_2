@@ -1,0 +1,95 @@
+### Guía de estudio: introducción a Mockito para desarrolladores junior
+
+#### ¿Qué es Mockito y por qué usarlo?
+
+* Mockito es un *framework* de código abierto para crear pruebas unitarias en Java. Está publicado bajo la licencia MIT y permite crear “dobles de prueba” o **objetos simulados (mocks)** para reemplazar dependencias durante la ejecución de la prueba. Estos objetos simulados son útiles en metodologías como TDD (Test‑Driven Development) y BDD (Behavior‑Driven Development).
+* Un mock registra todas las interacciones realizadas y permite verificarlas de forma selectiva. A diferencia de otros frameworks de “expect‑run‑verify”, Mockito elimina la necesidad de definir expectativas antes de la ejecución del código, lo que produce pruebas más legibles y menos acopladas.
+* Al usar mocks, las pruebas se concentran en la clase bajo prueba y evitan depender de capas inferiores (por ejemplo, el acceso a datos), lo que ayuda a detectar errores más fácilmente.
+
+#### Instalación y configuración básica
+
+1. **Dependencia**: añade `org.mockito:mockito-core` con el rango de versión deseado. Por ejemplo, en Maven:
+
+   ```xml
+   <dependency>
+       <groupId>org.mockito</groupId>
+       <artifactId>mockito-core</artifactId>
+       <version>5.18.0</version> <!-- versión estable lanzada el 20 de mayo de 2025:contentReference[oaicite:6]{index=6} -->
+       <scope>test</scope>
+   </dependency>
+   ```
+
+   En Gradle: `testImplementation "org.mockito:mockito-core:5.18.0"`.
+2. **Activación**: puedes inicializar anotaciones de Mockito de varias maneras:
+
+   * **MockitoJUnitRunner**: anota la clase de prueba con `@RunWith(MockitoJUnitRunner.class)`.
+   * **MockitoAnnotations.openMocks()**: llama a este método en un método `@Before` para inicializar los mocks anotados.
+   * **MockitoExtension** (en JUnit 5): registra la extensión `@ExtendWith(MockitoExtension.class)`.
+
+#### Creación de mocks y “stubbing” (programar comportamiento)
+
+* **mock()** – crea un objeto simulado de una interfaz o clase concreta. Por ejemplo:
+
+  ```java
+  List<String> listaMock = Mockito.mock(List.class);
+  ```
+* **@Mock** – anotación para declarar un mock como campo; evita llamar a `mock()` varias veces y permite identificar claramente el mock en los mensajes de error. Requiere inicialización mediante runner, extensión o `openMocks()`.
+* **@InjectMocks** – crea una instancia real de la clase bajo prueba e inyecta en ella los mocks de los campos anotados. Útil para probar clases con múltiples dependencias.
+
+**Stubbing de métodos**: define qué debe devolver un método del mock.
+
+* **when().thenReturn()** – programa el valor de retorno para una llamada con argumentos concretos. Los mocks devuelven `null` o valores por defecto cuando no hay stubbing.
+* **when().thenThrow()** – programa que un método lance una excepción.
+* **doThrow(), doReturn()** – útiles para métodos `void` o para espiar objetos; permiten lanzar excepciones o devolver valores sin usar `when()`.
+* **Stubbing consecutivo** – se pueden definir varios valores para el mismo método; se devolverán en orden de configuración.
+
+**Argument matchers**: sirven para usar “comodines” en los argumentos.
+
+* Ejemplo: `when(listaMock.get(anyInt())).thenReturn("elemento")` hace que cualquier llamada a `get()` con un entero devuelva “elemento”.
+* Para verificar, usa el mismo matcher: `verify(listaMock).get(anyInt())`.
+
+#### Verificación del comportamiento
+
+Después de ejecutar la lógica de la clase bajo prueba, se comprueba que las llamadas al mock ocurrieron como se esperaba:
+
+* **verify(mock).método(args)** – verifica que el método se llamó al menos una vez con los argumentos indicados. Por ejemplo:
+
+  ```java
+  verify(listaMock).add("uno");
+  ```
+* **times(n)**, **atLeast(n)**, **atMost(n)** o **never()** – controla el número exacto de invocaciones.
+* **inOrder()** – permite verificar que varios mocks se invocaron en un orden específico.
+* **verifyZeroInteractions()** / **verifyNoMoreInteractions()** – aseguran que no haya interacciones inesperadas; se deben usar con cuidado para evitar pruebas demasiado rígidas.
+
+#### Espías y captores
+
+* **spy()** – crea un *spy* de un objeto real para mezclar comportamiento real con stub y verificación; es útil para pruebas parciales.
+* **@Spy** – anotación equivalente para declarar un espía.
+* **ArgumentCaptor** – captura argumentos pasados a métodos simulados para realizar aserciones más detalladas; se usa junto con `verify()`.
+
+#### Anotaciones resumidas y métodos clave
+
+| Anotación/método                   | Función (palabras clave)                         | Nota/ejemplo breve                        |
+| ---------------------------------- | ------------------------------------------------ | ----------------------------------------- |
+| `mock(Class)`                      | Crear un mock de la clase o interfaz dada        | `List mock = mock(List.class)`            |
+| `@Mock`                            | Declarar un mock como campo                      | Requiere inicialización                   |
+| `@InjectMocks`                     | Instanciar la clase bajo prueba e inyectar mocks | Ayuda a probar servicios con dependencias |
+| `when().thenReturn()`              | Programar valor de retorno                       | `when(repo.get(id)).thenReturn(obj)`      |
+| `when().thenThrow()` / `doThrow()` | Programar lanzamiento de excepción               | `doThrow(new Ex()).when(mock).clear()`    |
+| `anyInt()`, `anyString()`, etc.    | Argument matchers para “comodines”               | Usar en stubbing/verificación             |
+| `verify(mock)`                     | Verificar invocaciones                           | `verify(list).add("item")`                |
+| `times(n)`, `never()`              | Número de invocaciones                           | `verify(list, never()).clear()`           |
+| `inOrder()`                        | Verificar orden de llamadas                      | `InOrder order = inOrder(mock1, mock2)`   |
+| `@Spy` / `spy()`                   | Crear espías de objetos reales                   | Mezcla comportamientos reales y simulados |
+| `ArgumentCaptor`                   | Captura argumentos para aserciones               | Requiere `@Captor`                        |
+
+#### Buenas prácticas y recomendaciones
+
+* **Aislar dependencias**: utiliza mocks para reemplazar componentes externos (repositorios, servicios web, bases de datos) y centrar la prueba en la lógica que deseas verificar.
+* **Evitar el exceso de verificación**: no verifiques cada interacción si no aporta información; usa `verifyNoMoreInteractions()` solo cuando sea necesario.
+* **Preferir matchers sencillos**: en muchos casos basta con la comparación mediante `equals()`; los matchers genéricos deben usarse con moderación.
+* **Actualizar la versión**: mantén Mockito actualizado para beneficiarte de mejoras y correcciones; la versión estable más reciente es **5.18.0** (20 de mayo de 2025).
+
+#### Conclusión
+
+Mockito es una herramienta fundamental en el ecosistema Java para realizar pruebas unitarias de forma aislada y legible. Permite crear objetos simulados, programar su comportamiento y verificar sus interacciones con la clase bajo prueba. Dominar Mockito ayuda a escribir pruebas más sólidas, facilita el desarrollo guiado por pruebas y mejora la calidad general del software.
