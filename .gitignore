@@ -70,3 +70,10 @@ Servers/
 #.project
 
 */WEB-INF/lib
+
+# Spring Boot logs
+**/logs/
+*.log
+
+# Maven target directories
+**/target/
