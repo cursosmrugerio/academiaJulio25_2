@@ -1,2 +1,10 @@
+com/financiero/domain/entity/SaldoTest.class
+com/financiero/application/mapper/MovimientoMapperTest.class
 com/financiero/CoreFinancieroApplicationTests.class
+com/financiero/domain/enums/MovimientoEstadoTest.class
+com/financiero/integration/MovimientoProcesadorIntegrationTest.class
+com/financiero/application/service/MovimientoProcesadorServiceTest.class
+com/financiero/infrastructure/repository/MovimientoRepositoryTest.class
+com/financiero/domain/entity/MovimientoSimpleTest.class
+com/financiero/presentation/controller/MovimientoProcesadorControllerTest.class
 com/financiero/application/service/FechaServiceTest.class

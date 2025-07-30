@@ -124,3 +124,41 @@ INSERT INTO PFIN_DIA_LIQUIDACION (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_LIQUIDACION,
 ('GRP002', 'EMP003', 'T+0', '2025-01-15', '2025-01-15'),
 ('GRP002', 'EMP003', 'T+1', '2025-01-15', '2025-01-16'),
 ('GRP002', 'EMP003', 'T+2', '2025-01-15', '2025-01-17');
+
+-- Insertar catálogo de operaciones
+INSERT INTO PFIN_CAT_OPERACION (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_OPERACION, TX_DESCRIPCION, CVE_AFECTA_SALDO, ST_ESTATUS, TX_OBSERVACIONES) VALUES 
+-- Operaciones que incrementan saldo (créditos)
+('GRP001', 'EMP001', 'DEPOSITO', 'Depósito en efectivo', 'I', 'A', 'Operación de depósito'),
+('GRP001', 'EMP001', 'ABONO', 'Abono a cuenta', 'I', 'A', 'Abono general'),
+('GRP001', 'EMP001', 'INTERES', 'Intereses ganados', 'I', 'A', 'Intereses a favor del cliente'),
+
+-- Operaciones que decrementan saldo (débitos)
+('GRP001', 'EMP001', 'RETIRO', 'Retiro en efectivo', 'D', 'A', 'Operación de retiro'),
+('GRP001', 'EMP001', 'CARGO', 'Cargo por comisión', 'D', 'A', 'Cargo general'),
+('GRP001', 'EMP001', 'PAGO', 'Pago de préstamo', 'D', 'A', 'Pago de amortización'),
+
+-- Operaciones que no afectan saldo
+('GRP001', 'EMP001', 'CONSULTA', 'Consulta de saldo', 'N', 'A', 'Solo consulta'),
+('GRP001', 'EMP001', 'REPORTE', 'Generación de reporte', 'N', 'A', 'Solo reporte'),
+
+-- Para otras empresas
+('GRP001', 'EMP002', 'DEPOSITO', 'Depósito en efectivo', 'I', 'A', 'Operación de depósito'),
+('GRP001', 'EMP002', 'RETIRO', 'Retiro en efectivo', 'D', 'A', 'Operación de retiro'),
+('GRP001', 'EMP002', 'CARGO', 'Cargo por comisión', 'D', 'A', 'Cargo general'),
+
+('GRP002', 'EMP003', 'DEPOSITO', 'Depósito en efectivo', 'I', 'A', 'Operación de depósito'),
+('GRP002', 'EMP003', 'RETIRO', 'Retiro en efectivo', 'D', 'A', 'Operación de retiro');
+
+-- Insertar saldos iniciales de ejemplo
+INSERT INTO PFIN_SALDO (CVE_GPO_EMPRESA, CVE_EMPRESA, F_FOTO, ID_CUENTA, CVE_DIVISA, SDO_EFECTIVO) VALUES 
+-- Saldos para cuentas de EMP001
+('GRP001', 'EMP001', '2025-01-15', 100001, 'MXN', 50000.00),
+('GRP001', 'EMP001', '2025-01-15', 100002, 'USD', 5000.00),
+('GRP001', 'EMP001', '2025-01-15', 100003, 'MXN', 25000.00),
+
+-- Saldos para cuentas de EMP002
+('GRP001', 'EMP002', '2025-01-15', 200001, 'MXN', 100000.00),
+('GRP001', 'EMP002', '2025-01-15', 200002, 'EUR', 3000.00),
+
+-- Saldos para cuentas de EMP003
+('GRP002', 'EMP003', '2025-01-15', 300001, 'MXN', 75000.00);
