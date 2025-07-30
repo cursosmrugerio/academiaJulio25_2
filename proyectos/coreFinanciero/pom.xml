@@ -47,6 +47,7 @@
         </dependency>
         
         <!-- MapStruct for DTOs -->
+        <!-- No se implemento en el proyecto MapStruct-->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
