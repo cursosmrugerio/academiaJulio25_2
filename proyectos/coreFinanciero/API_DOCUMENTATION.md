@@ -11,6 +11,7 @@
 - [Estructuras de Datos](#estructuras-de-datos)
 - [Manejo de Errores](#manejo-de-errores)
 - [Validaciones](#validaciones)
+- [Ejemplos de Uso](#ejemplos-de-uso)
 
 ---
 
@@ -205,6 +206,49 @@ GET /api/v1/movimientos/saldos/{claveGrupoEmpresa}/{claveEmpresa}
 
 ---
 
+#### 7. **Consultar Catálogo de Operaciones**
+```http
+GET /api/v1/movimientos/catalogo-operaciones/{claveGrupoEmpresa}/{claveEmpresa}
+```
+
+**📌 Propósito**: Obtiene el catálogo de operaciones disponibles para una empresa, con filtro opcional por estatus.
+
+**📥 Parámetros**:
+- **Path Variables**: Identificadores de empresa
+- **Query Parameters (opcionales)**:
+  - `estatus` (string): Estatus de la operación (ej: "A" para activas)
+
+**📤 Respuesta Esperada**:
+```json
+[
+  {
+    "id": {
+      "claveGrupoEmpresa": "001",
+      "claveEmpresa": "001",
+      "claveOperacion": "DEPOSITO"
+    },
+    "descripcionOperacion": "Depósito en cuenta",
+    "tipoOperacion": "A",
+    "estatus": "A"
+  }
+]
+```
+
+---
+
+#### 8. **Consultar Movimientos Pendientes de Procesamiento**
+```http
+GET /api/v1/movimientos/pendientes-procesamiento/{claveGrupoEmpresa}/{claveEmpresa}
+```
+
+**📌 Propósito**: Obtiene todos los movimientos que están pendientes de procesamiento para una empresa.
+
+**📥 Parámetros**: Path variables con identificadores de empresa
+
+**📤 Respuesta Esperada**: Lista de MovimientoDTO con movimientos en estado pendiente
+
+---
+
 ### 📊 Gestión de Movimientos
 **Base Path**: `/api/v1/movimientos`
 
@@ -240,9 +284,9 @@ POST /api/v1/movimientos/pre-movimiento
 **📤 Respuesta Esperada**:
 ```json
 {
-  "status": 201,
-  "message": "Pre-movimiento generado exitosamente",
-  "idPreMovimiento": 12345
+  "mensaje": "Pre-movimiento generado exitosamente",
+  "idPreMovimiento": 12345,
+  "status": "CREADO"
 }
 ```
 
@@ -267,6 +311,103 @@ POST /api/v1/movimientos/pre-movimiento-detalle
 }
 ```
 
+**📤 Respuesta Esperada**:
+```json
+{
+  "mensaje": "Detalle de pre-movimiento generado exitosamente",
+  "idPreMovimiento": 12345,
+  "claveConcepto": "INT001",
+  "status": "CREADO"
+}
+```
+
+---
+
+#### 3. **Obtener Pre-Movimiento Específico**
+```http
+GET /api/v1/movimientos/pre-movimiento/{claveGrupoEmpresa}/{claveEmpresa}/{idPreMovimiento}
+```
+
+**📌 Propósito**: Obtiene los detalles completos de un pre-movimiento específico.
+
+**📥 Parámetros**: Path variables con identificadores únicos del pre-movimiento
+
+**📤 Respuesta Esperada**: Objeto PreMovimientoResponseDTO completo o HTTP 404 si no existe
+
+---
+
+#### 4. **Obtener Movimientos Pendientes**
+```http
+GET /api/v1/movimientos/pendientes
+```
+
+**📌 Propósito**: Obtiene los pre-movimientos pendientes por fecha de liquidación.
+
+**📥 Parámetros**:
+- **Query Parameters**:
+  - `claveGrupoEmpresa` (string, requerido): Clave del grupo empresarial
+  - `claveEmpresa` (string, requerido): Clave de la empresa
+  - `fechaLiquidacion` (date, requerido): Fecha de liquidación en formato ISO
+
+**📤 Respuesta Esperada**: Lista de PreMovimientoResponseDTO
+
+---
+
+#### 5. **Procesar Movimientos Pendientes**
+```http
+POST /api/v1/movimientos/procesar-pendientes
+```
+
+**📌 Propósito**: Procesa todos los movimientos pendientes de una empresa.
+
+**📥 Parámetros**:
+- **Query Parameters**:
+  - `claveGrupoEmpresa` (string, requerido): Clave del grupo empresarial
+  - `claveEmpresa` (string, requerido): Clave de la empresa
+
+**📤 Respuesta Esperada**:
+```json
+{
+  "mensaje": "Movimientos pendientes procesados exitosamente",
+  "claveGrupoEmpresa": "001",
+  "claveEmpresa": "001"
+}
+```
+
+---
+
+#### 6. **Obtener Detalles de Pre-Movimiento**
+```http
+GET /api/v1/movimientos/detalles/{claveGrupoEmpresa}/{claveEmpresa}/{idPreMovimiento}
+```
+
+**📌 Propósito**: Obtiene todos los detalles (conceptos) de un pre-movimiento.
+
+**📥 Parámetros**: Path variables con identificadores únicos del pre-movimiento
+
+**📤 Respuesta Esperada**: Lista de PreMovimientoDetalleResponseDTO
+
+---
+
+#### 7. **Calcular Total de Conceptos**
+```http
+GET /api/v1/movimientos/total-conceptos/{claveGrupoEmpresa}/{claveEmpresa}/{idPreMovimiento}
+```
+
+**📌 Propósito**: Calcula el total de todos los conceptos de un pre-movimiento.
+
+**📥 Parámetros**: Path variables con identificadores únicos del pre-movimiento
+
+**📤 Respuesta Esperada**:
+```json
+{
+  "idPreMovimiento": 12345,
+  "totalConceptos": 1250.50,
+  "claveGrupoEmpresa": "001",
+  "claveEmpresa": "001"
+}
+```
+
 ---
 
 ### 📅 Liquidación
@@ -288,10 +429,10 @@ POST /api/v1/liquidacion/crear-fechas-anio
 **📤 Respuesta Esperada**:
 ```json
 {
-  "status": "success",
-  "message": "El proceso ha terminado",
+  "mensaje": "El proceso ha terminado",
   "anio": 2025,
-  "fechas_creadas": 252
+  "claveGrupoEmpresa": "001",
+  "claveEmpresa": "001"
 }
 ```
 
@@ -312,9 +453,11 @@ GET /api/v1/liquidacion/validar-fecha
 **📤 Respuesta Esperada**:
 ```json
 {
-  "valida": true,
-  "tipoLiquidacion": "T+1",
-  "esDiaHabil": true
+  "fechaOperacion": "2025-01-31",
+  "fechaLiquidacion": "2025-02-03",
+  "claveMercado": "DEPOSITO",
+  "esValida": true,
+  "mensaje": "Fecha de liquidación válida"
 }
 ```
 
@@ -338,10 +481,9 @@ POST /api/v1/fechas/recorrer
 **📤 Respuesta Esperada**:
 ```json
 {
-  "status": "success",
-  "message": "El proceso ha terminado",
-  "fechaAnterior": "2025-01-31",
-  "fechaNueva": "2025-02-03"
+  "mensaje": "El proceso ha terminado",
+  "claveGrupoEmpresa": "001",
+  "claveEmpresa": "001"
 }
 ```
 
@@ -363,7 +505,8 @@ GET /api/v1/fechas/sistema
 ```json
 {
   "fechaSistema": "2025-01-31",
-  "esDiaHabil": true
+  "claveGrupoEmpresa": "001",
+  "claveEmpresa": "001"
 }
 ```
 
@@ -379,6 +522,16 @@ PUT /api/v1/fechas/sistema
 **📥 Parámetros**:
 ```http
 ?claveGrupoEmpresa=001&claveEmpresa=001&nuevaFecha=2025-02-01
+```
+
+**📤 Respuesta Esperada**:
+```json
+{
+  "mensaje": "Fecha del sistema actualizada exitosamente",
+  "nuevaFecha": "2025-02-01",
+  "claveGrupoEmpresa": "001",
+  "claveEmpresa": "001"
+}
 ```
 
 ---
@@ -400,8 +553,7 @@ GET /api/v1/fechas/validar-dia-habil
 {
   "fecha": "2025-01-31",
   "esDiaHabil": true,
-  "siguienteDiaHabil": "2025-02-03",
-  "diaSemana": "viernes"
+  "siguienteDiaHabil": "2025-02-03"
 }
 ```
 

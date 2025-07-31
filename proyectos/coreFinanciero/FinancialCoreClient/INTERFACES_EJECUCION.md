@@ -16,14 +16,14 @@ El cliente HTTP/2 del Core Financiero ofrece tres formas diferentes de ejecutars
 
 **Comandos disponibles**:
 ```bash
-java -jar financial-core-http2-client-1.0.0.jar [COMANDO] [OPCIONES]
+java -jar target/financial-core-http2-client-1.0.0.jar [COMANDO] [OPCIONES]
 
 # Comandos:
-deposito            # Ejecuta solo el escenario de depósito
-cancelacion         # Ejecuta solo el escenario de cancelación  
-consultar-saldos    # Consulta saldos actuales
-health              # Verifica conectividad con el servidor
-demo                # Ejecuta demo completo con múltiples escenarios
+deposito            # Ejecuta escenario de depósito ($2,500 por defecto)
+cancelacion         # Ejecuta escenario de cancelación  
+consultar-saldos    # Consulta saldos actuales del sistema
+health              # Verifica conectividad HTTP/2 con el servidor
+demo                # Ejecuta FinancialCoreClientDemo completo
 ```
 
 **Opciones configurables**:
@@ -37,8 +37,17 @@ demo                # Ejecuta demo completo con múltiples escenarios
 
 **Ejemplo de uso**:
 ```bash
+# Depósito con logging detallado
 java -jar target/financial-core-http2-client-1.0.0.jar deposito -v
+
+# Health check a servidor remoto
 java -jar target/financial-core-http2-client-1.0.0.jar health -u http://servidor:8080
+
+# Demo completo con parámetros personalizados
+java -jar target/financial-core-http2-client-1.0.0.jar demo -g 002 -e 003 -U PROD_USER -v
+
+# Ayuda del sistema
+java -jar target/financial-core-http2-client-1.0.0.jar --help
 ```
 
 ---
@@ -55,16 +64,17 @@ java -jar target/financial-core-http2-client-1.0.0.jar health -u http://servidor
 
 **Lo que ejecuta**:
 ```java
-// Escenarios simultáneos:
-1. DepositoCompletoScenario    // NP → PV → PR (depósito $5,000)
+// Escenarios simultáneos ejecutados:
+1. DepositoCompletoScenario      // NP → PV → PR (depósito $5,000 a cuenta 1001)
 2. CancelacionMovimientoScenario // NP → PV → CA (retiro $1,500 cancelado)
 
-// Verificaciones:
-- Conectividad inicial
-- Saldos antes/durante/después
-- Impacto en saldos
-- Tiempos de ejecución
-- Estadísticas HTTP/2
+// Verificaciones automáticas:
+- Health check inicial del servidor
+- Consulta de saldos base del sistema
+- Ejecución paralela con HTTP/2 multiplexing
+- Validación de impacto en saldos por escenario
+- Cálculo de tiempos de ejecución y rendimiento
+- Reporte final con estadísticas HTTP/2 detalladas
 ```
 
 **Salida del reporte**:
@@ -152,6 +162,7 @@ java -jar target/financial-core-http2-client-1.0.0.jar health -u http://servidor
 
 ### Ejecutar un depósito con parámetros personalizados:
 ```bash
+# Depósito de $2,500 MXN a cuenta 1001 con logging detallado
 ./run-client.sh deposito -u http://prod-server:8080 -g 002 -e 005 -U PROD_USER -v
 ```
 
