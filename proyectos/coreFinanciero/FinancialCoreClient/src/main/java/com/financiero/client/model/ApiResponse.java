@@ -13,10 +13,10 @@ public class ApiResponse {
     @JsonProperty("status")
     private String status;
     
-    @JsonProperty(value = "message", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty("message")
     private String message;
     
-    @JsonProperty(value = "mensaje", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty("mensaje")
     private String mensaje;
     
     @JsonProperty("fecha_proceso")
@@ -27,6 +27,9 @@ public class ApiResponse {
     
     @JsonProperty("id_movimiento")
     private Long idMovimiento;
+    
+    @JsonProperty("idPreMovimiento")
+    private Long idPreMovimiento;
     
     @JsonProperty("usuario_cancela")
     private String usuarioCancela;
@@ -41,8 +44,14 @@ public class ApiResponse {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     
-    public String getMessage() { return message; }
+    public String getMessage() { 
+        // Devolver mensaje si existe, sino devolver message
+        return mensaje != null ? mensaje : message; 
+    }
     public void setMessage(String message) { this.message = message; }
+    
+    public String getMensaje() { return mensaje; }
+    public void setMensaje(String mensaje) { this.mensaje = mensaje; }
     
     public LocalDate getFechaProceso() { return fechaProceso; }
     public void setFechaProceso(LocalDate fechaProceso) { this.fechaProceso = fechaProceso; }
@@ -53,6 +62,9 @@ public class ApiResponse {
     public Long getIdMovimiento() { return idMovimiento; }
     public void setIdMovimiento(Long idMovimiento) { this.idMovimiento = idMovimiento; }
     
+    public Long getIdPreMovimiento() { return idPreMovimiento; }
+    public void setIdPreMovimiento(Long idPreMovimiento) { this.idPreMovimiento = idPreMovimiento; }
+    
     public String getUsuarioCancela() { return usuarioCancela; }
     public void setUsuarioCancela(String usuarioCancela) { this.usuarioCancela = usuarioCancela; }
     
@@ -61,11 +73,11 @@ public class ApiResponse {
     
     // Métodos de utilidad
     public boolean isSuccess() {
-        return "success".equals(status);
+        return "success".equals(status) || "CREADO".equals(status) || "OK".equals(status);
     }
     
     public boolean isError() {
-        return "error".equals(status);
+        return "error".equals(status) || "ERROR".equals(status);
     }
     
     @Override
