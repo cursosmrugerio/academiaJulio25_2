@@ -19,7 +19,7 @@ public interface CatalogoOperacionRepository extends JpaRepository<CatalogoOpera
         @Param("claveEmpresa") String claveEmpresa,
         @Param("claveOperacion") String claveOperacion);
     
-    @Query("SELECT co FROM CatalogoOperacion co WHERE co.id.claveGrupoEmpresa = :claveGrupoEmpresa AND co.id.claveEmpresa = :claveEmpresa AND co.estatusOperacion = :estatus")
+    @Query("SELECT co FROM CatalogoOperacion co WHERE co.id.claveGrupoEmpresa = :claveGrupoEmpresa AND co.id.claveEmpresa = :claveEmpresa AND co.estatus = :estatus")
     List<CatalogoOperacion> findByEmpresaAndEstatus(
         @Param("claveGrupoEmpresa") String claveGrupoEmpresa,
         @Param("claveEmpresa") String claveEmpresa,
@@ -31,12 +31,12 @@ public interface CatalogoOperacionRepository extends JpaRepository<CatalogoOpera
         @Param("claveEmpresa") String claveEmpresa,
         @Param("afectaSaldo") String afectaSaldo);
     
-    @Query("SELECT co FROM CatalogoOperacion co WHERE co.id.claveGrupoEmpresa = :claveGrupoEmpresa AND co.id.claveEmpresa = :claveEmpresa AND co.estatusOperacion = 'A'")
+    @Query("SELECT co FROM CatalogoOperacion co WHERE co.id.claveGrupoEmpresa = :claveGrupoEmpresa AND co.id.claveEmpresa = :claveEmpresa AND co.estatus = 'A'")
     List<CatalogoOperacion> findOperacionesActivas(
         @Param("claveGrupoEmpresa") String claveGrupoEmpresa,
         @Param("claveEmpresa") String claveEmpresa);
     
-    @Query("SELECT co FROM CatalogoOperacion co WHERE co.id.claveGrupoEmpresa = :claveGrupoEmpresa AND co.id.claveEmpresa = :claveEmpresa AND co.claveAfectaSaldo IN ('I', 'D') AND co.estatusOperacion = 'A'")
+    @Query("SELECT co FROM CatalogoOperacion co WHERE co.id.claveGrupoEmpresa = :claveGrupoEmpresa AND co.id.claveEmpresa = :claveEmpresa AND co.claveAfectaSaldo IN ('I', 'D') AND co.estatus = 'A'")
     List<CatalogoOperacion> findOperacionesQueAfectanSaldo(
         @Param("claveGrupoEmpresa") String claveGrupoEmpresa,
         @Param("claveEmpresa") String claveEmpresa);

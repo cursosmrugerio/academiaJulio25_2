@@ -1,0 +1,17 @@
+🚀 Para ejecutar el proyecto:
+
+  cd /Users/mike/Desarrollo/academiaXidJulio25/proyectos/coreFinanciero
+  mvn spring-boot:run
+
+  🌐 URLs importantes:
+
+  - API: http://localhost:8080
+  - H2 Console: http://localhost:8080/h2-console
+  - Swagger: http://localhost:8080/swagger-ui.html
+
+  📊 Datos precargados:
+
+  - 3 empresas con parámetros del sistema
+  - Días festivos México 2025
+  - Fechas de liquidación base
+  - Préstamos y pre-movimientos de ejemplo

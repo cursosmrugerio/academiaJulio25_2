@@ -46,7 +46,6 @@ com/financiero/infrastructure/repository/MovimientoDetalleRepository.class
 com/financiero/domain/entity/PreMovimiento.class
 com/financiero/application/dto/PreMovimientoResponseDTO.class
 com/financiero/infrastructure/repository/DiaFestivoRepository.class
-com/financiero/presentation/exception/GlobalExceptionHandler.class
 com/financiero/exception/GlobalExceptionHandler$ErrorResponse$Builder.class
 com/financiero/application/dto/MovimientoDTO.class
 com/financiero/domain/entity/SaldoId.class
