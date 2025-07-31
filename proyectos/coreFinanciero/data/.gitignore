@@ -1,0 +1,6 @@
+# Archivos de base de datos H2
+*.db
+*.mv.db
+*.trace.db
+*.lock.db
+*~
