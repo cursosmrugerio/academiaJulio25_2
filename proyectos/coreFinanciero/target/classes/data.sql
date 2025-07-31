@@ -63,12 +63,10 @@ INSERT INTO PFIN_DIA_LIQUIDACION (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_LIQUIDACION,
 ('GRP001', 'EMP001', 'AYER', '2025-01-20', '2025-01-17');
 
 -- Insertar préstamos de ejemplo
+-- Solo un préstamo por empresa debido a la clave primaria compuesta (CVE_GPO_EMPRESA, CVE_EMPRESA)
 INSERT INTO SIM_PRESTAMO (CVE_GPO_EMPRESA, CVE_EMPRESA, ID_PRESTAMO, CVE_DIVISA, IMP_PRESTAMO) VALUES 
 ('GRP001', 'EMP001', 1001, 'MXN', 1000000.00),
-('GRP001', 'EMP001', 1002, 'USD', 50000.00),
-('GRP001', 'EMP001', 1003, 'MXN', 750000.00),
 ('GRP001', 'EMP002', 2001, 'MXN', 2000000.00),
-('GRP001', 'EMP002', 2002, 'EUR', 25000.00),
 ('GRP002', 'EMP003', 3001, 'MXN', 500000.00);
 
 -- Insertar pre-movimientos de ejemplo
@@ -86,8 +84,8 @@ INSERT INTO PFIN_PRE_MOVIMIENTO (
 ),
 (
     'GRP001', 'EMP001', 10002, '2025-01-15', '2025-01-17', '2025-01-17',
-    100002, 1002, 'USD', 'INTERES', 1250.00, 0, 20.50,
-    'CHEQUE', 'CREDITO', 'Pago de intereses préstamo 1002', 1, 0, 'USUARIO01', 'NP',
+    100002, 1001, 'MXN', 'INTERES', 1250.00, 0, 1.00,
+    'CHEQUE', 'CREDITO', 'Pago de intereses préstamo 1001', 1, 0, 'USUARIO01', 'NP',
     NULL
 ),
 (

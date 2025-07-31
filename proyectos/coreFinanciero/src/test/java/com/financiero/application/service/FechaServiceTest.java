@@ -79,7 +79,7 @@ class FechaServiceTest {
         when(parametroSistemaRepository.findById(parametroId)).thenReturn(Optional.empty());
         
         // Act & Assert
-        assertThrows(NotFoundException.class, () -> 
+        assertThrows(BusinessException.class, () -> 
             fechaService.recorrerFecha(claveGrupoEmpresa, claveEmpresa));
         
         verify(parametroSistemaRepository).findById(parametroId);
@@ -128,7 +128,7 @@ class FechaServiceTest {
             .thenReturn(Optional.empty());
         
         // Act & Assert
-        assertThrows(NotFoundException.class, () -> 
+        assertThrows(BusinessException.class, () -> 
             fechaService.obtenerFechaSistema(claveGrupoEmpresa, claveEmpresa));
         
         verify(parametroSistemaRepository).findFechaSistema(claveGrupoEmpresa, claveEmpresa);
