@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cliente web para Core Financiero - Sistema de Tesorería">
+    <title>Financial Core WebApp</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/es.min.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">🏦</div>
+            <h2>Financial Core WebApp</h2>
+            <div class="loading-spinner"></div>
+            <p>Conectando con Core Financiero...</p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <span class="logo-icon">🏦</span>
+                    <span class="logo-text">Financial Core</span>
+                </div>
+                <div class="connection-status" id="connectionStatus">
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    <span class="status-text" id="statusText">Verificando conexión...</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="enterprise-selector">
+                    <select id="empresaSelector" class="enterprise-select">
+                        <option value="001-001">Empresa 001-001</option>
+                        <option value="002-002">Empresa 002-002</option>
+                        <option value="003-003">Empresa 003-003</option>
+                    </select>
+                </div>
+                
+                <div class="user-info">
+                    <span class="user-name">WEBAPP_USER</span>
+                    <div class="user-avatar">👤</div>
+                </div>
+                
+                <button class="theme-toggle" id="themeToggle" title="Cambiar tema">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar" id="sidebar">
+                <div class="nav-section">
+                    <h3 class="nav-title">🏠 Principal</h3>
+                    <button class="nav-btn active" data-view="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </button>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="nav-title">🔄 Procesamiento</h3>
+                    <button class="nav-btn" data-view="movements">
+                        <span class="nav-icon">💳</span>
+                        <span class="nav-text">Pre-Movimientos</span>
+                    </button>
+                    <button class="nav-btn" data-view="processing">
+                        <span class="nav-icon">⚡</span>
+                        <span class="nav-text">Procesar</span>
+                    </button>
+                    <button class="nav-btn" data-view="scenarios">
+                        <span class="nav-icon">🎬</span>
+                        <span class="nav-text">Escenarios Demo</span>
+                    </button>
+                </div>
+                
+                <div class="nav-section">
+                    <h3 class="nav-title">📊 Consultas</h3>
+                    <button class="nav-btn" data-view="balances">
+                        <span class="nav-icon">💰</span>
+                        <span class="nav-text">Saldos</span>
+                    </button>
+                    <button class="nav-btn" data-view="movements-list">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Movimientos</span>
+                    </button>
+                    <button class="nav-btn" data-view="catalog">
+                        <span class="nav-icon">📚</span>
+                        <span class="nav-text">Catálogo</span>
+                    </button>
+                </div>
+                
+                <div class="nav-section">
+                    <h3 class="nav-title">📅 Fechas</h3>
+                    <button class="nav-btn" data-view="dates">
+                        <span class="nav-icon">🗓️</span>
+                        <span class="nav-text">Sistema</span>
+                    </button>
+                    <button class="nav-btn" data-view="liquidation">
+                        <span class="nav-icon">⏰</span>
+                        <span class="nav-text">Liquidación</span>
+                    </button>
+                </div>
+
+                <!-- Sidebar Footer -->
+                <div class="sidebar-footer">
+                    <div class="version-info">
+                        <small>v1.0.0</small>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="content-area" id="contentArea">
+                <!-- Dashboard View (Default) -->
+                <div id="dashboard-view" class="view active">
+                    <div class="view-header">
+                        <h1>📊 Dashboard Principal</h1>
+                        <p>Vista general del sistema Core Financiero</p>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">💰</div>
+                            <div class="metric-content">
+                                <h3>Saldo Total</h3>
+                                <div class="metric-value" id="totalBalance">$0.00</div>
+                                <div class="metric-change positive" id="balanceChange">+0.00%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">🔄</div>
+                            <div class="metric-content">
+                                <h3>Movimientos Hoy</h3>
+                                <div class="metric-value" id="todayMovements">0</div>
+                                <div class="metric-change" id="movementsChange">--</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">⏳</div>
+                            <div class="metric-content">
+                                <h3>Pendientes</h3>
+                                <div class="metric-value" id="pendingCount">0</div>
+                                <div class="metric-status" id="pendingStatus">Al día</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">🏥</div>
+                            <div class="metric-content">
+                                <h3>Estado Sistema</h3>
+                                <div class="metric-value" id="systemHealth">Verificando...</div>
+                                <div class="metric-status" id="healthStatus">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="dashboard-left">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>📈 Distribución de Saldos</h3>
+                                </div>
+                                <div class="card-content">
+                                    <canvas id="balanceChart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-right">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>🕐 Actividad Reciente</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="activity-list" id="activityList">
+                                        <div class="activity-item">
+                                            <div class="activity-icon">🚀</div>
+                                            <div class="activity-content">
+                                                <div class="activity-title">Sistema iniciado</div>
+                                                <div class="activity-time">Hace unos momentos</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenarios View -->
+                <div id="scenarios-view" class="view">
+                    <div class="view-header">
+                        <h1>🎬 Escenarios Demostrativos</h1>
+                        <p>Flujos completos que replican el cliente HTTP/2 Java</p>
+                    </div>
+                    
+                    <div class="scenarios-grid">
+                        <!-- Scenario 1: Complete Deposit -->
+                        <div class="scenario-card">
+                            <div class="scenario-header">
+                                <div class="scenario-icon">💰</div>
+                                <h3>Depósito Completo</h3>
+                                <span class="scenario-badge">NP → PV → PR</span>
+                            </div>
+                            <p class="scenario-description">
+                                Flujo completo de estados con actualización automática de saldos
+                            </p>
+                            
+                            <div class="scenario-params">
+                                <div class="param-group">
+                                    <label>Importe (MXN)</label>
+                                    <input type="number" id="depositAmount" value="2500" min="1" step="0.01">
+                                </div>
+                                <div class="param-group">
+                                    <label>Cuenta</label>
+                                    <input type="number" id="depositAccount" value="1001" min="1">
+                                </div>
+                                <div class="param-group">
+                                    <label>Fecha Liquidación</label>
+                                    <input type="date" id="depositDate">
+                                </div>
+                            </div>
+                            
+                            <button class="scenario-btn primary" onclick="ejecutarDepositoCompleto()">
+                                <span class="btn-icon">▶️</span>
+                                Ejecutar Depósito
+                            </button>
+                            
+                            <div class="scenario-progress hidden" id="depositProgress">
+                                <div class="progress-header">
+                                    <span>Ejecutando...</span>
+                                    <span class="progress-time" id="depositTime">0ms</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="depositProgressFill"></div>
+                                </div>
+                                <div class="progress-steps" id="depositSteps"></div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario 2: Cancellation -->
+                        <div class="scenario-card">
+                            <div class="scenario-header">
+                                <div class="scenario-icon">❌</div>
+                                <h3>Cancelación de Movimiento</h3>
+                                <span class="scenario-badge danger">NP → PV → CA</span>
+                            </div>
+                            <p class="scenario-description">
+                                Demostración de rollback automático de saldos
+                            </p>
+                            
+                            <div class="scenario-params">
+                                <div class="param-group">
+                                    <label>Importe (MXN)</label>
+                                    <input type="number" id="cancelAmount" value="1500" min="1" step="0.01">
+                                </div>
+                                <div class="param-group">
+                                    <label>Cuenta</label>
+                                    <input type="number" id="cancelAccount" value="1002" min="1">
+                                </div>
+                            </div>
+                            
+                            <button class="scenario-btn danger" onclick="ejecutarCancelacion()">
+                                <span class="btn-icon">🚫</span>
+                                Ejecutar Cancelación
+                            </button>
+                            
+                            <div class="scenario-progress hidden" id="cancelProgress">
+                                <div class="progress-header">
+                                    <span>Ejecutando...</span>
+                                    <span class="progress-time" id="cancelTime">0ms</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="cancelProgressFill"></div>
+                                </div>
+                                <div class="progress-steps" id="cancelSteps"></div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario 3: Health Check -->
+                        <div class="scenario-card">
+                            <div class="scenario-header">
+                                <div class="scenario-icon">🏥</div>
+                                <h3>Health Check Completo</h3>
+                                <span class="scenario-badge info">Verificación</span>
+                            </div>
+                            <p class="scenario-description">
+                                Verificación completa de conectividad y estado del sistema
+                            </p>
+                            
+                            <button class="scenario-btn info" onclick="ejecutarHealthCheck()">
+                                <span class="btn-icon">🔍</span>
+                                Verificar Sistema
+                            </button>
+                            
+                            <div class="scenario-progress hidden" id="healthProgress">
+                                <div class="progress-steps" id="healthSteps"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div class="results-panel" id="resultsPanel">
+                        <div class="results-header">
+                            <h3>📈 Resultados de Ejecución</h3>
+                            <div class="results-actions">
+                                <button class="btn secondary" onclick="exportResults()">📄 Exportar</button>
+                                <button class="btn secondary" onclick="clearResults()">🗑️ Limpiar</button>
+                            </div>
+                        </div>
+                        <div class="results-content">
+                            <div class="execution-log" id="executionLog">
+                                <div class="log-placeholder">
+                                    <p>Los resultados de ejecución aparecerán aquí...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other views will be loaded dynamically -->
+                <div id="balances-view" class="view">
+                    <div class="view-header">
+                        <h1>💰 Consulta de Saldos</h1>
+                        <p>Saldos actuales e históricos por cuenta</p>
+                    </div>
+                    <div class="loading-placeholder">
+                        <p>Vista en construcción...</p>
+                    </div>
+                </div>
+
+                <div id="movements-view" class="view">
+                    <div class="view-header">
+                        <h1>💳 Pre-Movimientos</h1>
+                        <p>Creación y gestión de pre-movimientos</p>
+                    </div>
+                    <div class="loading-placeholder">
+                        <p>Vista en construcción...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="assets/js/core/utils.js"></script>
+    <script src="assets/js/core/api-client.js"></script>
+    <script src="assets/js/core/state-manager.js"></script>
+    <script src="assets/js/components/dashboard.js"></script>
+    <script src="assets/js/components/scenarios.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
