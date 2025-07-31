@@ -1,6 +1,7 @@
 package com.javatechie.spring.batch.config;
 
 import com.javatechie.spring.batch.entity.Customer;
+import com.javatechie.spring.batch.entity.ProcessingReport;
 import com.javatechie.spring.batch.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -30,6 +31,8 @@ public class SpringBatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     private CustomerRepository customerRepository;
+    
+    private static long jobStartTime;
 
 
     @Bean
@@ -85,7 +88,9 @@ public class SpringBatchConfig {
     @Bean
     public Job runJob() {
         return jobBuilderFactory.get("importCustomers")
-                .flow(step1()).end().build();
+                .flow(step1())
+                .next(reportStep())
+                .end().build();
 
     }
 
@@ -94,6 +99,31 @@ public class SpringBatchConfig {
         SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
         asyncTaskExecutor.setConcurrencyLimit(10);
         return asyncTaskExecutor;
+    }
+    
+    @Bean
+    public ReportItemReader reportReader() {
+        return new ReportItemReader(customerRepository);
+    }
+    
+    @Bean
+    public ReportProcessor reportProcessor() {
+        jobStartTime = System.currentTimeMillis();
+        return new ReportProcessor(jobStartTime);
+    }
+    
+    @Bean
+    public ReportItemWriter reportWriter() {
+        return new ReportItemWriter();
+    }
+    
+    @Bean
+    public Step reportStep() {
+        return stepBuilderFactory.get("report-step").<ProcessingReport, ProcessingReport>chunk(1)
+                .reader(reportReader())
+                .processor(reportProcessor())
+                .writer(reportWriter())
+                .build();
     }
 
 }
