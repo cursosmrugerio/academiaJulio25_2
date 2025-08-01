@@ -52,7 +52,7 @@ public class FinancialCoreClientDemo {
                 client, GRUPO_EMPRESA, EMPRESA, USUARIO);
             escenarios.add(depositoScenario.ejecutar(
                 10001L, CUENTA_DEMO, new BigDecimal("5000.00"), 
-                LocalDate.now().plusDays(1), "Depósito demo HTTP/2"
+                LocalDate.of(2025, 8, 2), "Depósito demo HTTP/2"
             ));
             
             // Escenario 2: Cancelación de movimiento (NP → PV → CA)
@@ -61,7 +61,7 @@ public class FinancialCoreClientDemo {
                 client, GRUPO_EMPRESA, EMPRESA, USUARIO);
             escenarios.add(cancelacionScenario.ejecutar(
                 10002L, CUENTA_DEMO, new BigDecimal("1500.00"), 
-                LocalDate.now().plusDays(1), "Retiro a cancelar demo HTTP/2"
+                LocalDate.of(2025, 8, 2), "Retiro a cancelar demo HTTP/2"
             ));
             
             logger.info("⚡ Ejecutando escenarios de forma asíncrona (HTTP/2 multiplexing)...");

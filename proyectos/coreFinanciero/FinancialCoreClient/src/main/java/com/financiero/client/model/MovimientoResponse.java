@@ -77,15 +77,24 @@ public class MovimientoResponse {
     private String situacionMovimiento;
     
     @JsonProperty("fechaHoraRegistro")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]")
     private LocalDateTime fechaHoraRegistro;
     
     @JsonProperty("fechaHoraActivacion")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]")
     private LocalDateTime fechaHoraActivacion;
     
     @JsonProperty("claveUsuario")
     private String claveUsuario;
+    
+    @JsonProperty("logIpAddress")
+    private String logIpAddress;
+    
+    @JsonProperty("logOsUser")
+    private String logOsUser;
+    
+    @JsonProperty("logHost")
+    private String logHost;
     
     @JsonProperty("claveUsuarioCancela")
     private String claveUsuarioCancela;
@@ -95,6 +104,9 @@ public class MovimientoResponse {
     
     @JsonProperty("detalles")
     private List<MovimientoDetalle> detalles;
+    
+    @JsonProperty("idReferencia")
+    private String idReferencia;
     
     // Constructor
     public MovimientoResponse() {}
@@ -169,6 +181,15 @@ public class MovimientoResponse {
     public String getClaveUsuario() { return claveUsuario; }
     public void setClaveUsuario(String claveUsuario) { this.claveUsuario = claveUsuario; }
     
+    public String getLogIpAddress() { return logIpAddress; }
+    public void setLogIpAddress(String logIpAddress) { this.logIpAddress = logIpAddress; }
+    
+    public String getLogOsUser() { return logOsUser; }
+    public void setLogOsUser(String logOsUser) { this.logOsUser = logOsUser; }
+    
+    public String getLogHost() { return logHost; }
+    public void setLogHost(String logHost) { this.logHost = logHost; }
+    
     public String getClaveUsuarioCancela() { return claveUsuarioCancela; }
     public void setClaveUsuarioCancela(String claveUsuarioCancela) { this.claveUsuarioCancela = claveUsuarioCancela; }
     
@@ -177,6 +198,9 @@ public class MovimientoResponse {
     
     public List<MovimientoDetalle> getDetalles() { return detalles; }
     public void setDetalles(List<MovimientoDetalle> detalles) { this.detalles = detalles; }
+    
+    public String getIdReferencia() { return idReferencia; }
+    public void setIdReferencia(String idReferencia) { this.idReferencia = idReferencia; }
     
     // Métodos de utilidad
     public boolean isVirtual() {

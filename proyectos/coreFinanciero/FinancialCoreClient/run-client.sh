@@ -5,7 +5,7 @@
 # Versión: 1.0.0
 
 JAR_FILE="target/financial-core-http2-client-1.0.0.jar"
-MAIN_CLASS="com.financiero.client.FinancialCoreClientCLI"
+MAIN_CLASS="com.financiero.client.examples.FinancialCoreClientDemo"
 
 # Colores para output
 RED='\033[0;31m'
@@ -16,31 +16,33 @@ NC='\033[0m' # No Color
 
 # Función para mostrar ayuda
 show_help() {
-    echo -e "${BLUE}Cliente HTTP/2 para Core Financiero${NC}"
-    echo -e "${BLUE}===================================${NC}"
+    echo -e "${BLUE}Cliente HTTP/2 para Core Financiero - Demo Automático${NC}"
+    echo -e "${BLUE}====================================================${NC}"
     echo ""
-    echo "Uso: $0 [COMANDO] [OPCIONES]"
+    echo "Este script ejecuta automáticamente el demo completo del Core Financiero"
+    echo "con fechas dinámicas que funcionan durante los próximos 5 días."
     echo ""
-    echo "Comandos disponibles:"
-    echo "  demo                - Ejecutar demo completo"
-    echo "  deposito            - Ejecutar escenario de depósito"
-    echo "  cancelacion         - Ejecutar escenario de cancelación"
-    echo "  consultar-saldos    - Consultar saldos actuales"
-    echo "  health              - Verificar conectividad"
+    echo "Uso: $0 [OPCIONES]"
     echo ""
     echo "Opciones:"
-    echo "  -u, --url URL       - URL del servidor (default: http://localhost:8080)"
-    echo "  -g, --grupo GRUPO   - Clave grupo empresa (default: 001)"
-    echo "  -e, --empresa EMP   - Clave empresa (default: 001)"
-    echo "  -U, --usuario USER  - Clave usuario (default: CLI_USER)"
-    echo "  -v, --verbose       - Habilitar logging detallado"
     echo "  -h, --help          - Mostrar esta ayuda"
     echo ""
-    echo "Ejemplos:"
-    echo "  $0 demo"
-    echo "  $0 health -v"
-    echo "  $0 deposito -u http://servidor:8080 -g 002 -e 003"
-    echo "  $0 consultar-saldos --verbose"
+    echo "Funcionalidades del demo:"
+    echo "  ✅ Conectividad HTTP/2 con el servidor"  
+    echo "  ✅ Escenario de depósito completo (NP → PV → PR)"
+    echo "  ✅ Escenario de cancelación de movimiento"
+    echo "  ✅ Consulta de saldos antes, durante y después"
+    echo "  ✅ Validación de fechas de liquidación"
+    echo "  ✅ Demostración de multiplexing HTTP/2"
+    echo ""
+    echo "Prerequisitos:"
+    echo "  • Java 21 o superior"
+    echo "  • Core Financiero backend ejecutándose en localhost:8080"
+    echo "  • Cliente compilado (mvn clean package)"
+    echo ""
+    echo "Ejemplo de uso:"
+    echo "  $0                  # Ejecutar demo completo"
+    echo "  $0 --help          # Mostrar esta ayuda"
 }
 
 # Función para verificar prerequisitos
@@ -68,15 +70,12 @@ check_prerequisites() {
 
 # Función para ejecutar el cliente
 run_client() {
-    local cmd="$1"
-    shift
-    
-    echo -e "${GREEN}🚀 Ejecutando Cliente HTTP/2 Core Financiero${NC}"
-    echo -e "${BLUE}Comando: $cmd${NC}"
+    echo -e "${GREEN}🚀 Ejecutando Demo del Cliente HTTP/2 Core Financiero${NC}"
+    echo -e "${BLUE}Ejecutando demo completo con fechas dinámicas${NC}"
     echo ""
     
-    # Construir comando Java
-    JAVA_CMD="java -jar $JAR_FILE $cmd $@"
+    # Construir comando Java para ejecutar el demo
+    JAVA_CMD="java -cp $JAR_FILE $MAIN_CLASS"
     
     # Ejecutar
     eval $JAVA_CMD
@@ -84,29 +83,15 @@ run_client() {
 
 # Función principal
 main() {
-    # Si no hay argumentos, mostrar ayuda
-    if [ $# -eq 0 ]; then
+    # Si se pide ayuda, mostrarla
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
         show_help
         exit 0
     fi
     
-    # Procesar argumentos
-    case "$1" in
-        -h|--help)
-            show_help
-            exit 0
-            ;;
-        demo|deposito|cancelacion|consultar-saldos|health)
-            check_prerequisites
-            run_client "$@"
-            ;;
-        *)
-            echo -e "${RED}❌ Comando no reconocido: $1${NC}"
-            echo ""
-            show_help
-            exit 1
-            ;;
-    esac
+    # Verificar prerequisitos y ejecutar demo
+    check_prerequisites
+    run_client
 }
 
 # Ejecutar función principal con todos los argumentos

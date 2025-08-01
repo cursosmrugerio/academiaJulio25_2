@@ -1,15 +1,19 @@
 -- Datos iniciales para el sistema Core Financiero
 -- Migración de datos base del sistema PL/SQL
+-- 
+-- NOTA: Este archivo contiene fechas dinámicas usando CURRENT_DATE para las empresas del cliente HTTP/2
+-- Esto permite que las demostraciones funcionen automáticamente durante los próximos 5 días
+-- sin necesidad de modificar manualmente las fechas
 
 -- Insertar parámetros del sistema
 INSERT INTO PFIN_PARAMETRO (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_MEDIO, F_MEDIO) VALUES 
 ('GRP001', 'EMP001', 'SYSTEM', '2025-01-15'),
 ('GRP001', 'EMP002', 'SYSTEM', '2025-01-15'),
 ('GRP002', 'EMP003', 'SYSTEM', '2025-01-15'),
--- Datos para el cliente HTTP/2
-('001', '001', 'SYSTEM', '2025-07-31'),
-('999', '999', 'SYSTEM', '2025-07-31'),
-('002', '003', 'SYSTEM', '2025-07-31');
+-- Datos para el cliente HTTP/2 (fecha actual del sistema)
+('001', '001', 'SYSTEM', CURRENT_DATE),
+('999', '999', 'SYSTEM', CURRENT_DATE),
+('002', '003', 'SYSTEM', CURRENT_DATE);
 
 -- Insertar días festivos para México 2025
 INSERT INTO PFIN_DIA_FESTIVO (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_PAIS, F_DIA_FESTIVO) VALUES 
@@ -156,35 +160,61 @@ INSERT INTO PFIN_DIA_LIQUIDACION (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_LIQUIDACION,
 ('GRP002', 'EMP003', 'T+1', '2025-01-15', '2025-01-16'),
 ('GRP002', 'EMP003', 'T+2', '2025-01-15', '2025-01-17'),
 
--- Fechas de liquidación para empresas del cliente HTTP/2 (julio 2025)
--- Para empresa 001-001
-('001', '001', 'T+0', '2025-07-31', '2025-07-31'),
-('001', '001', 'T+0', '2025-08-01', '2025-08-01'),
-('001', '001', 'T+0', '2025-08-02', '2025-08-02'),
-('001', '001', 'T+0', '2025-08-03', '2025-08-03'),
-('001', '001', 'T+0', '2025-08-04', '2025-08-04'),
+-- Fechas de liquidación para empresas del cliente HTTP/2 (dinámicas para 5 días)
+-- Para empresa 001-001 - T+0 (mismo día)
+('001', '001', 'T+0', CURRENT_DATE, CURRENT_DATE),
+('001', '001', 'T+0', CURRENT_DATE + 1, CURRENT_DATE + 1),
+('001', '001', 'T+0', CURRENT_DATE + 2, CURRENT_DATE + 2),
+('001', '001', 'T+0', CURRENT_DATE + 3, CURRENT_DATE + 3),
+('001', '001', 'T+0', CURRENT_DATE + 4, CURRENT_DATE + 4),
 
-('001', '001', 'T+1', '2025-07-31', '2025-08-01'),
-('001', '001', 'T+1', '2025-08-01', '2025-08-02'),
-('001', '001', 'T+1', '2025-08-02', '2025-08-03'),
-('001', '001', 'T+1', '2025-08-03', '2025-08-04'),
-('001', '001', 'T+1', '2025-08-04', '2025-08-05'),
+-- T+1 (día siguiente)
+('001', '001', 'T+1', CURRENT_DATE, CURRENT_DATE + 1),
+('001', '001', 'T+1', CURRENT_DATE + 1, CURRENT_DATE + 2),
+('001', '001', 'T+1', CURRENT_DATE + 2, CURRENT_DATE + 3),
+('001', '001', 'T+1', CURRENT_DATE + 3, CURRENT_DATE + 4),
+('001', '001', 'T+1', CURRENT_DATE + 4, CURRENT_DATE + 5),
 
-('001', '001', 'T+2', '2025-07-31', '2025-08-02'),
-('001', '001', 'T+2', '2025-08-01', '2025-08-03'),
-('001', '001', 'T+2', '2025-08-02', '2025-08-04'),
-('001', '001', 'T+2', '2025-08-03', '2025-08-05'),
-('001', '001', 'T+2', '2025-08-04', '2025-08-06'),
+-- T+2 (dos días)
+('001', '001', 'T+2', CURRENT_DATE, CURRENT_DATE + 2),
+('001', '001', 'T+2', CURRENT_DATE + 1, CURRENT_DATE + 3),
+('001', '001', 'T+2', CURRENT_DATE + 2, CURRENT_DATE + 4),
+('001', '001', 'T+2', CURRENT_DATE + 3, CURRENT_DATE + 5),
+('001', '001', 'T+2', CURRENT_DATE + 4, CURRENT_DATE + 6),
 
 -- Para empresa 999-999
-('999', '999', 'T+0', '2025-07-31', '2025-07-31'),
-('999', '999', 'T+1', '2025-07-31', '2025-08-01'),
-('999', '999', 'T+2', '2025-07-31', '2025-08-02'),
+('999', '999', 'T+0', CURRENT_DATE, CURRENT_DATE),
+('999', '999', 'T+0', CURRENT_DATE + 1, CURRENT_DATE + 1),
+('999', '999', 'T+0', CURRENT_DATE + 2, CURRENT_DATE + 2),
+('999', '999', 'T+0', CURRENT_DATE + 3, CURRENT_DATE + 3),
+('999', '999', 'T+0', CURRENT_DATE + 4, CURRENT_DATE + 4),
+('999', '999', 'T+1', CURRENT_DATE, CURRENT_DATE + 1),
+('999', '999', 'T+1', CURRENT_DATE + 1, CURRENT_DATE + 2),
+('999', '999', 'T+1', CURRENT_DATE + 2, CURRENT_DATE + 3),
+('999', '999', 'T+1', CURRENT_DATE + 3, CURRENT_DATE + 4),
+('999', '999', 'T+1', CURRENT_DATE + 4, CURRENT_DATE + 5),
+('999', '999', 'T+2', CURRENT_DATE, CURRENT_DATE + 2),
+('999', '999', 'T+2', CURRENT_DATE + 1, CURRENT_DATE + 3),
+('999', '999', 'T+2', CURRENT_DATE + 2, CURRENT_DATE + 4),
+('999', '999', 'T+2', CURRENT_DATE + 3, CURRENT_DATE + 5),
+('999', '999', 'T+2', CURRENT_DATE + 4, CURRENT_DATE + 6),
 
 -- Para empresa 002-003
-('002', '003', 'T+0', '2025-07-31', '2025-07-31'),
-('002', '003', 'T+1', '2025-07-31', '2025-08-01'),
-('002', '003', 'T+2', '2025-07-31', '2025-08-02');
+('002', '003', 'T+0', CURRENT_DATE, CURRENT_DATE),
+('002', '003', 'T+0', CURRENT_DATE + 1, CURRENT_DATE + 1),
+('002', '003', 'T+0', CURRENT_DATE + 2, CURRENT_DATE + 2),
+('002', '003', 'T+0', CURRENT_DATE + 3, CURRENT_DATE + 3),
+('002', '003', 'T+0', CURRENT_DATE + 4, CURRENT_DATE + 4),
+('002', '003', 'T+1', CURRENT_DATE, CURRENT_DATE + 1),
+('002', '003', 'T+1', CURRENT_DATE + 1, CURRENT_DATE + 2),
+('002', '003', 'T+1', CURRENT_DATE + 2, CURRENT_DATE + 3),
+('002', '003', 'T+1', CURRENT_DATE + 3, CURRENT_DATE + 4),
+('002', '003', 'T+1', CURRENT_DATE + 4, CURRENT_DATE + 5),
+('002', '003', 'T+2', CURRENT_DATE, CURRENT_DATE + 2),
+('002', '003', 'T+2', CURRENT_DATE + 1, CURRENT_DATE + 3),
+('002', '003', 'T+2', CURRENT_DATE + 2, CURRENT_DATE + 4),
+('002', '003', 'T+2', CURRENT_DATE + 3, CURRENT_DATE + 5),
+('002', '003', 'T+2', CURRENT_DATE + 4, CURRENT_DATE + 6);
 
 -- Insertar catálogo de operaciones
 INSERT INTO PFIN_CAT_OPERACION (CVE_GPO_EMPRESA, CVE_EMPRESA, CVE_OPERACION, TX_DESCRIPCION, CVE_AFECTA_SALDO, ST_ESTATUS, TX_OBSERVACIONES) VALUES 
@@ -245,21 +275,52 @@ INSERT INTO PFIN_SALDO (CVE_GPO_EMPRESA, CVE_EMPRESA, F_FOTO, ID_CUENTA, CVE_DIV
 -- Saldos para cuentas de EMP003
 ('GRP002', 'EMP003', '2025-01-15', 300001, 'MXN', 75000.00),
 
--- Saldos iniciales para empresas del cliente HTTP/2 (fecha actual)
--- Saldos para empresa 001-001
-('001', '001', '2025-07-31', 1001, 'MXN', 100000.00),
-('001', '001', '2025-07-31', 1002, 'USD', 10000.00),
-('001', '001', '2025-07-31', 1003, 'EUR', 5000.00),
-('001', '001', '2025-07-31', 1004, 'MXN', 250000.00),
+-- Saldos iniciales para empresas del cliente HTTP/2 (dinámicos para 5 días)
+-- Saldos para empresa 001-001 (saldos para fecha actual y próximos 4 días)
+('001', '001', CURRENT_DATE, 1001, 'MXN', 100000.00),
+('001', '001', CURRENT_DATE, 1002, 'MXN', 50000.00),
+('001', '001', CURRENT_DATE, 1003, 'MXN', 25000.00),
+('001', '001', CURRENT_DATE + 1, 1001, 'MXN', 100000.00),
+('001', '001', CURRENT_DATE + 1, 1002, 'MXN', 50000.00),
+('001', '001', CURRENT_DATE + 1, 1003, 'MXN', 25000.00),
+('001', '001', CURRENT_DATE + 2, 1001, 'MXN', 100000.00),
+('001', '001', CURRENT_DATE + 2, 1002, 'MXN', 50000.00),
+('001', '001', CURRENT_DATE + 2, 1003, 'MXN', 25000.00),
+('001', '001', CURRENT_DATE + 3, 1001, 'MXN', 100000.00),
+('001', '001', CURRENT_DATE + 3, 1002, 'MXN', 50000.00),
+('001', '001', CURRENT_DATE + 3, 1003, 'MXN', 25000.00),
+('001', '001', CURRENT_DATE + 4, 1001, 'MXN', 100000.00),
+('001', '001', CURRENT_DATE + 4, 1002, 'MXN', 50000.00),
+('001', '001', CURRENT_DATE + 4, 1003, 'MXN', 25000.00),
 
 -- Saldos para empresa 999-999
-('999', '999', '2025-07-31', 9001, 'MXN', 500000.00),
-('999', '999', '2025-07-31', 9002, 'USD', 25000.00),
-('999', '999', '2025-07-31', 9003, 'MXN', 75000.00),
+('999', '999', CURRENT_DATE, 9001, 'MXN', 500000.00),
+('999', '999', CURRENT_DATE, 9002, 'USD', 25000.00),
+('999', '999', CURRENT_DATE, 9003, 'MXN', 75000.00),
+('999', '999', CURRENT_DATE + 1, 9001, 'MXN', 500000.00),
+('999', '999', CURRENT_DATE + 1, 9002, 'USD', 25000.00),
+('999', '999', CURRENT_DATE + 1, 9003, 'MXN', 75000.00),
+('999', '999', CURRENT_DATE + 2, 9001, 'MXN', 500000.00),
+('999', '999', CURRENT_DATE + 2, 9002, 'USD', 25000.00),
+('999', '999', CURRENT_DATE + 2, 9003, 'MXN', 75000.00),
+('999', '999', CURRENT_DATE + 3, 9001, 'MXN', 500000.00),
+('999', '999', CURRENT_DATE + 3, 9002, 'USD', 25000.00),
+('999', '999', CURRENT_DATE + 3, 9003, 'MXN', 75000.00),
+('999', '999', CURRENT_DATE + 4, 9001, 'MXN', 500000.00),
+('999', '999', CURRENT_DATE + 4, 9002, 'USD', 25000.00),
+('999', '999', CURRENT_DATE + 4, 9003, 'MXN', 75000.00),
 
 -- Saldos para empresa 002-003
-('002', '003', '2025-07-31', 2001, 'MXN', 300000.00),
-('002', '003', '2025-07-31', 2002, 'USD', 15000.00);
+('002', '003', CURRENT_DATE, 2001, 'MXN', 300000.00),
+('002', '003', CURRENT_DATE, 2002, 'USD', 15000.00),
+('002', '003', CURRENT_DATE + 1, 2001, 'MXN', 300000.00),
+('002', '003', CURRENT_DATE + 1, 2002, 'USD', 15000.00),
+('002', '003', CURRENT_DATE + 2, 2001, 'MXN', 300000.00),
+('002', '003', CURRENT_DATE + 2, 2002, 'USD', 15000.00),
+('002', '003', CURRENT_DATE + 3, 2001, 'MXN', 300000.00),
+('002', '003', CURRENT_DATE + 3, 2002, 'USD', 15000.00),
+('002', '003', CURRENT_DATE + 4, 2001, 'MXN', 300000.00),
+('002', '003', CURRENT_DATE + 4, 2002, 'USD', 15000.00);
 
 -- Pre-movimientos para empresas del cliente HTTP/2
 INSERT INTO PFIN_PRE_MOVIMIENTO (
@@ -268,16 +329,16 @@ INSERT INTO PFIN_PRE_MOVIMIENTO (
     CVE_MEDIO, CVE_MERCADO, TX_NOTA, ID_GRUPO, ID_MOVIMIENTO, CVE_USUARIO, SIT_PRE_MOVIMIENTO,
     NUM_PAGO_AMORTIZACION
 ) VALUES 
--- Pre-movimientos para empresa 001-001
+-- Pre-movimientos para empresa 001-001 (dinámicos para demos)
 (
-    '001', '001', 50001, '2025-07-31', '2025-08-01', '2025-08-01',
+    '001', '001', 50001, CURRENT_DATE, CURRENT_DATE + 1, CURRENT_DATE + 1,
     1001, 10001, 'MXN', 'DEPOSITO', 15000.00, 0, 1.00,
     'TRANSFERENCIA', 'DEPOSITOS', 'Depósito demo cliente HTTP/2', 1, 0, 'CLI_USER', 'NP',
     NULL
 ),
 (
-    '001', '001', 50002, '2025-07-31', '2025-08-01', '2025-08-01',
-    1004, 10001, 'MXN', 'RETIRO', 8500.00, 0, 1.00,
+    '001', '001', 50002, CURRENT_DATE, CURRENT_DATE + 1, CURRENT_DATE + 1,
+    1002, 10001, 'MXN', 'RETIRO', 8500.00, 0, 1.00,
     'EFECTIVO', 'RETIROS', 'Retiro demo cliente HTTP/2', 2, 0, 'CLI_USER', 'NP',
     NULL
 );

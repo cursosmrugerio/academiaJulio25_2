@@ -190,9 +190,9 @@ public class MovimientoProcesadorService {
         }
     }
     
-    private Long obtenerSiguienteIdMovimiento(String claveGrupoEmpresa, String claveEmpresa) {
+    private synchronized Long obtenerSiguienteIdMovimiento(String claveGrupoEmpresa, String claveEmpresa) {
         Long maxId = movimientoRepository.findMaxIdMovimiento(claveGrupoEmpresa, claveEmpresa);
-        return maxId + 1;
+        return (maxId != null ? maxId : 0L) + 1;
     }
     
     public void procesarMovimientosVirtualesAReales(String claveGrupoEmpresa, String claveEmpresa, LocalDate fechaProceso) {
