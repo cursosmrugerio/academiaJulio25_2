@@ -1,0 +1,6 @@
+Semana 2.
+
+1. Resolver simulador Java OCA8: Test1
+2. Explicar documento PDF Spring Batch
+3. Desarrollar proyecto SpringBatch
+3. Programa Mockito (Sin Spring)
