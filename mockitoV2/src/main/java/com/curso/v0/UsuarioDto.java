@@ -1,7 +1,5 @@
 package com.curso.v0;
 
-//Nota: Esta clase no se muestra explícitamente, pero es necesaria para que el código compile.
-//Se puede crear como una clase normal o un record de Java.
 public class UsuarioDto {
 	private final Long id;
 	private final String nombre;

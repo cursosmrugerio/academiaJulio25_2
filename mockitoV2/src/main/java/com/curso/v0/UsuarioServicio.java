@@ -2,8 +2,10 @@ package com.curso.v0;
 
 public class UsuarioServicio {
 
+	
     private final UsuarioRepositorio usuarioRepositorio;
 
+    //Inyección por constructor
     public UsuarioServicio(final UsuarioRepositorio usuarioRepositorio) {
         this.usuarioRepositorio = usuarioRepositorio;
     }

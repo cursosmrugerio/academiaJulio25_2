@@ -1,0 +1,24 @@
+MongoDb
+
+1. Descargar Imagen MongoDB
+
+docker run -d \
+  --name my-mongodb \
+  -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=admin \
+  -v mongodb_data:/data/db \
+  mongo:8.0
+
+
+2. Ejecutar contenedor MongoDB
+
+  docker exec -it my-mongodb mongosh -u admin -p admin --authenticationDatabase admin
+
+3. Consulta al collection: personal
+
+  db.personal.find().pretty()
+
+4. Conexion Compass
+
+mongodb://admin:admin@localhost:27017/
