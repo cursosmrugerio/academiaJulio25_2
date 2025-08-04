@@ -4,7 +4,7 @@ public class ConexionMongoDb implements AutoCloseable {
 	
 	void open() throws Exception{
 		System.out.println("Abrir conexion MongoDb");
-		throw new Exception("Error abrir conexión MongoDb");
+		//throw new Exception("Error abrir conexión MongoDb");
 	}
 
 	@Override
