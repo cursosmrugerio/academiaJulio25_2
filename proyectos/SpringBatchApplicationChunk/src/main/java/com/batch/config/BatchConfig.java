@@ -30,7 +30,8 @@ public class BatchConfig {
 
     @Bean
     public Step readFile(JobRepository jobRepository, PlatformTransactionManager transactionManager){
-        return new StepBuilder("readFile", jobRepository)
+        return new StepBuilder("readFile")
+                .repository(jobRepository)
                 .<Person, Person>chunk(10, transactionManager)
                 .reader(itemReader())
                 .writer(itemWriter())
@@ -39,7 +40,8 @@ public class BatchConfig {
 
     @Bean
     public Job job(JobRepository jobRepository, Step readFile){
-        return new JobBuilder("readFileWithChunk", jobRepository)
+        return new JobBuilder("readFileWithChunk")
+                .repository(jobRepository)
                 .start(readFile)
                 .build();
     }
