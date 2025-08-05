@@ -32,9 +32,10 @@ public class BatchConfig {
     public Step readFile(JobRepository jobRepository, PlatformTransactionManager transactionManager){
         return new StepBuilder("readFile")
                 .repository(jobRepository)
-                .<Person, Person>chunk(10, transactionManager)
+                .<Person, Person>chunk(10)
                 .reader(itemReader())
                 .writer(itemWriter())
+                .transactionManager(transactionManager)
                 .build();
     }
 
