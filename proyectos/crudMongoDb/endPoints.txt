@@ -1,0 +1,8 @@
+- POST /api/clientes - Create cliente
+  - GET /api/clientes - Get all clientes
+  - GET /api/clientes/{id} - Get cliente by ID
+  - GET /api/clientes/email/{email} - Get cliente by email
+  - GET /api/clientes/search?nombre= - Search by name
+  - PUT /api/clientes/{id} - Update cliente
+  - DELETE /api/clientes/{id} - Delete by ID
+  - DELETE /api/clientes/email/{email} - Delete by email
