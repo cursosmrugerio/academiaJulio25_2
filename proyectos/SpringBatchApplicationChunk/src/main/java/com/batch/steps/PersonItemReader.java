@@ -6,15 +6,15 @@ import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.nio.charset.StandardCharsets;
 
 public class PersonItemReader extends FlatFileItemReader<Person> {
 
-    public PersonItemReader(){
+    public PersonItemReader(Resource resource){
         setName("readerPersons");
-        setResource(new ClassPathResource("persons.csv"));
+        setResource(resource);
         setLinesToSkip(1);
         setEncoding(StandardCharsets.UTF_8.name());
         setLineMapper(getLineMapper());

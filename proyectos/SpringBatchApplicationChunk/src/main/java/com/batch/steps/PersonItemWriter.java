@@ -18,9 +18,11 @@ public class PersonItemWriter implements ItemWriter<Person> {
     @Override
     public void write(Chunk<? extends Person> chunk) throws Exception {
 
-        chunk.forEach(person -> person.toString());
+        chunk.forEach(person -> log.info("Processing person: {}", person.toString()));
 
-        personService.saveAll((List<Person>) chunk);
+        @SuppressWarnings("unchecked")
+        List<Person> persons = (List<Person>) chunk.getItems();
+        personService.saveAll(persons);
 
     }
 }
