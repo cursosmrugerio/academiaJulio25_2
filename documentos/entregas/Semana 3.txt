@@ -1,0 +1,18 @@
+Semana 3.
+
+1. Resolver simulador Java OCA8: Test2
+2. Backend CRUD con MongoDb con Swagger
+3. Documento explicar comandos Maven
+4. Documento explicar Github Pull Request.
+
+
+Semana 4.
+
+1. Spring Batch 
+   Rest Controller
+   Mysql (Reader)
+   MongoDB (Writter)
+   Test Unit
+   Mockito (MockMVC)
+   Jococo (Covarianza)
+   Swagger
