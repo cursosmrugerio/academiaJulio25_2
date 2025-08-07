@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Controller
@@ -104,8 +105,17 @@ public class PedidoCompraController {
     public String listarPedidosPorCliente(@PathVariable Long clienteId, Model model) {
         Optional<Cliente> cliente = clienteRepository.findById(clienteId);
         if (cliente.isPresent()) {
+            var pedidos = pedidoRepository.findByClienteId(clienteId);
+            BigDecimal totalFacturado = BigDecimal.ZERO;
+            for (PedidoCompra pedido : pedidos) {
+                if (pedido.getTotal() != null) {
+                    totalFacturado = totalFacturado.add(pedido.getTotal());
+                }
+            }
+                
             model.addAttribute("cliente", cliente.get());
-            model.addAttribute("pedidos", pedidoRepository.findByClienteId(clienteId));
+            model.addAttribute("pedidos", pedidos);
+            model.addAttribute("totalFacturado", totalFacturado);
             return "pedidos/por-cliente";
         }
         return "redirect:/clientes";

@@ -73,14 +73,10 @@
                                             <tbody>
                                                 <tr th:each="pedido : ${cliente.pedidos}">
                                                     <td th:text="${pedido.numeroPedido}"></td>
-                                                    <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></td>
+                                                    <td th:text="${pedido.fechaPedido}"></td>
                                                     <td th:text="'$' + ${pedido.total}"></td>
                                                     <td>
-                                                        <span class="badge" 
-                                                              th:classappend="${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).ENTREGADO} ? 'bg-success' : 
-                                                                             ${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).CANCELADO} ? 'bg-danger' : 
-                                                                             ${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).EN_PROCESO} ? 'bg-warning' : 'bg-secondary'"
-                                                              th:text="${pedido.estado}"></span>
+                                                        <span class="badge bg-primary" th:text="${pedido.estado}"></span>
                                                     </td>
                                                     <td>
                                                         <a th:href="@{/pedidos/{id}(id=${pedido.id})}" class="btn btn-sm btn-info">Ver</a>
