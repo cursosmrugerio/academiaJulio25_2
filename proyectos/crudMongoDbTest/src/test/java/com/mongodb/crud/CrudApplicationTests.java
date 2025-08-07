@@ -10,4 +10,9 @@ class CrudApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void testMainMethod() {
+		CrudApplication.main(new String[]{});
+	}
+
 }
