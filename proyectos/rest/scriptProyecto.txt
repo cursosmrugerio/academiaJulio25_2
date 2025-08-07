@@ -1,0 +1,43 @@
+1. Instalar Docker
+https://www.docker.com/products/docker-desktop/
+
+2. Instalar el contenedor con Mysql
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=xideral2025 -p
+  3306:3306 -d mysql:latest
+
+3. Crear usuario y base de datos en mysql
+Este script crea el usuario xideral, la base de datos academy_db y otorga todos los privilegios sobre esa base de datos al usuario.
+
+CREATE USER 'xideral'@'%' IDENTIFIED BY 'xideral';
+  CREATE DATABASE IF NOT EXISTS academy_db;
+  GRANT ALL PRIVILEGES ON academy_db.* TO 'xideral'@'%';
+  FLUSH PRIVILEGES;
+
+4. Esta tabla incluye id (clave primaria), nombre, email (único), teléfono y fecha de registro con timestamp automático.
+
+CREATE TABLE Cliente (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nombre VARCHAR(100) NOT NULL,
+      email VARCHAR(150) UNIQUE NOT NULL,
+      telefono VARCHAR(20),
+      fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
+5.  Este script inserta 10 clientes con datos de ejemplo en la tabla Cliente.   
+
+INSERT INTO Cliente (nombre, email, telefono) VALUES
+  ('Juan Pérez', 'juan.perez@email.com', '555-0101'),
+  ('María García', 'maria.garcia@email.com', '555-0102'),
+  ('Carlos López', 'carlos.lopez@email.com', '555-0103'),
+  ('Ana Martínez', 'ana.martinez@email.com', '555-0104'),
+  ('Pedro Rodríguez', 'pedro.rodriguez@email.com', '555-0105'),
+  ('Laura Fernández', 'laura.fernandez@email.com', '555-0106'),
+  ('Miguel Sánchez', 'miguel.sanchez@email.com', '555-0107'),
+  ('Sofia Ruiz', 'sofia.ruiz@email.com', '555-0108'),
+  ('Diego Morales', 'diego.morales@email.com', '555-0109'),
+  ('Carmen Jiménez', 'carmen.jimenez@email.com', '555-0110');
+
+
+
+
+

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Gestión de Clientes</h1>
+        </header>
+
+        <main>
+            <!-- Formulario para crear/editar cliente -->
+            <section class="form-section">
+                <h2 id="form-title">Agregar Cliente</h2>
+                <form id="cliente-form">
+                    <input type="hidden" id="cliente-id">
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="tel" id="telefono" name="telefono">
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" id="submit-btn">Guardar Cliente</button>
+                        <button type="button" id="cancel-btn" style="display: none;">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Sección de búsqueda -->
+            <section class="search-section">
+                <h2>Buscar Clientes</h2>
+                <div class="search-controls">
+                    <input type="text" id="search-input" placeholder="Buscar por nombre...">
+                    <button id="search-btn">Buscar</button>
+                    <button id="load-all-btn">Cargar Todos</button>
+                </div>
+            </section>
+
+            <!-- Tabla de clientes -->
+            <section class="table-section">
+                <h2>Lista de Clientes</h2>
+                <div class="table-container">
+                    <table id="clientes-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientes-tbody">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modal de confirmación -->
+        <div id="confirm-modal" class="modal">
+            <div class="modal-content">
+                <h3>Confirmar Eliminación</h3>
+                <p>¿Está seguro de que desea eliminar este cliente?</p>
+                <div class="modal-buttons">
+                    <button id="confirm-delete-btn" class="btn-danger">Eliminar</button>
+                    <button id="cancel-delete-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de mensajes -->
+        <div id="message-area"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
