@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Pedido</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3>Detalle del Pedido</h3>
+                        <div>
+                            <a th:href="@{/pedidos/{id}/editar(id=${pedido.id})}" class="btn btn-warning">Editar</a>
+                            <a href="/pedidos" class="btn btn-secondary">Volver</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Información del Pedido</h5>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <th width="30%">ID:</th>
+                                            <td th:text="${pedido.id}"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Número Pedido:</th>
+                                            <td th:text="${pedido.numeroPedido}"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Fecha:</th>
+                                            <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total:</th>
+                                            <td>
+                                                <strong class="text-success" th:text="'$' + ${pedido.total}"></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Estado:</th>
+                                            <td>
+                                                <span class="badge fs-6" 
+                                                      th:classappend="${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).ENTREGADO} ? 'bg-success' : 
+                                                                     ${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).CANCELADO} ? 'bg-danger' : 
+                                                                     ${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).EN_PROCESO} ? 'bg-warning' : 
+                                                                     ${pedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).ENVIADO} ? 'bg-info' : 'bg-secondary'"
+                                                      th:text="${pedido.estado}"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Información del Cliente</h5>
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title" th:text="${pedido.cliente.nombre}"></h6>
+                                        <p class="card-text">
+                                            <strong>Email:</strong> <span th:text="${pedido.cliente.email}"></span><br>
+                                            <strong>Teléfono:</strong> <span th:text="${pedido.cliente.telefono ?: 'No especificado'}"></span><br>
+                                            <strong>Dirección:</strong> <span th:text="${pedido.cliente.direccion ?: 'No especificada'}"></span>
+                                        </p>
+                                        <a th:href="@{/clientes/{id}(id=${pedido.cliente.id})}" class="btn btn-sm btn-primary">
+                                            Ver Cliente Completo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Descripción del Pedido</h5>
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <p th:text="${pedido.descripcion ?: 'Sin descripción'}" class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Otros Pedidos del Cliente</h5>
+                                <div th:if="${not #lists.isEmpty(pedido.cliente.pedidos)}">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Número</th>
+                                                    <th>Fecha</th>
+                                                    <th>Total</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="otroPedido : ${pedido.cliente.pedidos}" 
+                                                    th:if="${otroPedido.id != pedido.id}">
+                                                    <td th:text="${otroPedido.numeroPedido}"></td>
+                                                    <td th:text="${#temporals.format(otroPedido.fechaPedido, 'dd/MM/yyyy')}"></td>
+                                                    <td th:text="'$' + ${otroPedido.total}"></td>
+                                                    <td>
+                                                        <span class="badge" 
+                                                              th:classappend="${otroPedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).ENTREGADO} ? 'bg-success' : 
+                                                                             ${otroPedido.estado == T(com.academy.mvc.entity.PedidoCompra.EstadoPedido).CANCELADO} ? 'bg-danger' : 'bg-secondary'"
+                                                              th:text="${otroPedido.estado}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <a th:href="@{/pedidos/{id}(id=${otroPedido.id})}" class="btn btn-sm btn-outline-info">Ver</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div th:if="${#lists.size(pedido.cliente.pedidos) <= 1}" class="alert alert-info">
+                                    Este es el único pedido del cliente.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
