@@ -8,11 +8,13 @@ Semana 3.
 
 Semana 4.
 
+PROYECTO FINAL (CODIGO, INTERNAMENTE DOCUMENTADO)
+
 1. Spring Batch 
    Rest Controller
    Mysql (Reader)
    MongoDB (Writter)
    Test Unit
    Mockito (MockMVC)
-   Jococo (Covarianza)
+   Jococo (Covarianza 80%)
    Swagger
